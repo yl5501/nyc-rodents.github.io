@@ -1,0 +1,31 @@
+---
+title: "NYC Rodents"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+# About Rodents Project 
+![](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTE5dDNjaDZmN2xkb242NGhlcGFxZmExZXlyeWt4MGhwMGt2Mm93aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PGZDyeFpO56MM/giphy.gif)
+
+## Motivation 
+Project goal: Investigate rodent complaints, inspections, and exterminator activities to find out trends and effectiveness of interventions.
+
+Motivation: Address public health and sanitation concerns by understanding how city responses correlate with rodent complaints.
+
+## Links to other websites
+* [My Github](https://github.com/yl5501)
+* [My Linkedin](https://www.linkedin.com/in/yujieli1103/)
+* E-mail: [yl5501@cumc.columbia.edu](mailto:yl5501@cumc.columbia.edu)
+
+
+
+
+## Link to my academic and professional experience
+[About me](about.html)
+
+## Link to Problem 2
+[Problem 2](plotly.html)
+
+
