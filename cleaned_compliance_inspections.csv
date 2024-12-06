@@ -1,0 +1,65 @@
+"date","zone_id","region","type","count"
+2022-06-30,2,"Bronx: Grand Concourse","Failed (any reason), summons issued",1269
+2022-06-30,2,"Bronx: Grand Concourse","Passed",631
+2022-06-30,2,"Bronx: Grand Concourse","Active rat signs",1051
+2022-06-30,2,"Bronx: Grand Concourse","Compliance inspections",1900
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Failed (any reason), summons issued",2133
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Passed",1431
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Active rat signs",2032
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Compliance inspections",3564
+2022-06-30,4,"Manhattan: Harlem","Failed (any reason), summons issued",1150
+2022-06-30,4,"Manhattan: Harlem","Passed",639
+2022-06-30,4,"Manhattan: Harlem","Active rat signs",1038
+2022-06-30,4,"Manhattan: Harlem","Compliance inspections",1789
+2022-06-30,3,"Manhattan: East Village and Chinatown","Failed (any reason), summons issued",354
+2022-06-30,3,"Manhattan: East Village and Chinatown","Passed",334
+2022-06-30,3,"Manhattan: East Village and Chinatown","Active rat signs",321
+2022-06-30,3,"Manhattan: East Village and Chinatown","Compliance inspections",688
+2022-12-31,2,"Bronx: Grand Concourse","Failed (any reason), summons issued",1654
+2022-12-31,2,"Bronx: Grand Concourse","Passed",1046
+2022-12-31,2,"Bronx: Grand Concourse","Active rat signs",1396
+2022-12-31,2,"Bronx: Grand Concourse","Compliance inspections",2700
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Failed (any reason), summons issued",2314
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Passed",1209
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Active rat signs",2125
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Compliance inspections",3523
+2022-12-31,4,"Manhattan: Harlem","Failed (any reason), summons issued",1161
+2022-12-31,4,"Manhattan: Harlem","Passed",498
+2022-12-31,4,"Manhattan: Harlem","Active rat signs",1058
+2022-12-31,4,"Manhattan: Harlem","Compliance inspections",1659
+2022-12-31,3,"Manhattan: East Village and Chinatown","Failed (any reason), summons issued",438
+2022-12-31,3,"Manhattan: East Village and Chinatown","Passed",415
+2022-12-31,3,"Manhattan: East Village and Chinatown","Active rat signs",383
+2022-12-31,3,"Manhattan: East Village and Chinatown","Compliance inspections",853
+2023-06-30,2,"Bronx: Grand Concourse","Failed (any reason), summons issued",1455
+2023-06-30,2,"Bronx: Grand Concourse","Passed",929
+2023-06-30,2,"Bronx: Grand Concourse","Active rat signs",1248
+2023-06-30,2,"Bronx: Grand Concourse","Compliance inspections",2384
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Failed (any reason), summons issued",1888
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Passed",944
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Active rat signs",1804
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Compliance inspections",2832
+2023-06-30,4,"Manhattan: Harlem","Failed (any reason), summons issued",1813
+2023-06-30,4,"Manhattan: Harlem","Passed",552
+2023-06-30,4,"Manhattan: Harlem","Active rat signs",1682
+2023-06-30,4,"Manhattan: Harlem","Compliance inspections",2365
+2023-06-30,3,"Manhattan: East Village and Chinatown","Failed (any reason), summons issued",394
+2023-06-30,3,"Manhattan: East Village and Chinatown","Passed",411
+2023-06-30,3,"Manhattan: East Village and Chinatown","Active rat signs",346
+2023-06-30,3,"Manhattan: East Village and Chinatown","Compliance inspections",805
+2023-12-31,2,"Bronx: Grand Concourse","Failed (any reason), summons issued",1640
+2023-12-31,2,"Bronx: Grand Concourse","Passed",924
+2023-12-31,2,"Bronx: Grand Concourse","Active rat signs",1380
+2023-12-31,2,"Bronx: Grand Concourse","Compliance inspections",2564
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Failed (any reason), summons issued",3073
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Passed",1705
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Active rat signs",2855
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Compliance inspections",4778
+2023-12-31,4,"Manhattan: Harlem","Failed (any reason), summons issued",2005
+2023-12-31,4,"Manhattan: Harlem","Passed",905
+2023-12-31,4,"Manhattan: Harlem","Active rat signs",1783
+2023-12-31,4,"Manhattan: Harlem","Compliance inspections",2910
+2023-12-31,3,"Manhattan: East Village and Chinatown","Failed (any reason), summons issued",431
+2023-12-31,3,"Manhattan: East Village and Chinatown","Passed",425
+2023-12-31,3,"Manhattan: East Village and Chinatown","Active rat signs",369
+2023-12-31,3,"Manhattan: East Village and Chinatown","Compliance inspections",865

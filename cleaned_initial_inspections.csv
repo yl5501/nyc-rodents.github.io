@@ -1,0 +1,81 @@
+"date","zone_id","region","type","count"
+2022-06-30,2,"Bronx: Grand Concourse","City agency",472
+2022-06-30,2,"Bronx: Grand Concourse","Private property",2326
+2022-06-30,2,"Bronx: Grand Concourse","Active rat signs",2058
+2022-06-30,2,"Bronx: Grand Concourse","Failed (any reason)",2798
+2022-06-30,2,"Bronx: Grand Concourse","Initial inspections",9816
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","City agency",292
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Private property",3830
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Active rat signs",3821
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Failed (any reason)",4122
+2022-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Initial inspections",15336
+2022-06-30,4,"Manhattan: Harlem","City agency",550
+2022-06-30,4,"Manhattan: Harlem","Private property",2121
+2022-06-30,4,"Manhattan: Harlem","Active rat signs",2348
+2022-06-30,4,"Manhattan: Harlem","Failed (any reason)",2671
+2022-06-30,4,"Manhattan: Harlem","Initial inspections",9602
+2022-06-30,3,"Manhattan: East Village and Chinatown","City agency",550
+2022-06-30,3,"Manhattan: East Village and Chinatown","Private property",784
+2022-06-30,3,"Manhattan: East Village and Chinatown","Active rat signs",1194
+2022-06-30,3,"Manhattan: East Village and Chinatown","Failed (any reason)",1334
+2022-06-30,3,"Manhattan: East Village and Chinatown","Initial inspections",5273
+2022-12-31,2,"Bronx: Grand Concourse","City agency",585
+2022-12-31,2,"Bronx: Grand Concourse","Private property",2949
+2022-12-31,2,"Bronx: Grand Concourse","Active rat signs",2512
+2022-12-31,2,"Bronx: Grand Concourse","Failed (any reason)",3534
+2022-12-31,2,"Bronx: Grand Concourse","Initial inspections",9999
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","City agency",324
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Private property",3434
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Active rat signs",3398
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Failed (any reason)",3758
+2022-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Initial inspections",15564
+2022-12-31,4,"Manhattan: Harlem","City agency",456
+2022-12-31,4,"Manhattan: Harlem","Private property",1318
+2022-12-31,4,"Manhattan: Harlem","Active rat signs",1673
+2022-12-31,4,"Manhattan: Harlem","Failed (any reason)",1774
+2022-12-31,4,"Manhattan: Harlem","Initial inspections",4596
+2022-12-31,3,"Manhattan: East Village and Chinatown","City agency",487
+2022-12-31,3,"Manhattan: East Village and Chinatown","Private property",808
+2022-12-31,3,"Manhattan: East Village and Chinatown","Active rat signs",1065
+2022-12-31,3,"Manhattan: East Village and Chinatown","Failed (any reason)",1295
+2022-12-31,3,"Manhattan: East Village and Chinatown","Initial inspections",5288
+2023-06-30,2,"Bronx: Grand Concourse","City agency",760
+2023-06-30,2,"Bronx: Grand Concourse","Private property",2627
+2023-06-30,2,"Bronx: Grand Concourse","Active rat signs",2704
+2023-06-30,2,"Bronx: Grand Concourse","Failed (any reason)",3387
+2023-06-30,2,"Bronx: Grand Concourse","Initial inspections",9975
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","City agency",349
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Private property",3217
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Active rat signs",3261
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Failed (any reason)",3566
+2023-06-30,1,"Brooklyn: Bed Stuy and Bushwick","Initial inspections",15531
+2023-06-30,4,"Manhattan: Harlem","City agency",882
+2023-06-30,4,"Manhattan: Harlem","Private property",2858
+2023-06-30,4,"Manhattan: Harlem","Active rat signs",3118
+2023-06-30,4,"Manhattan: Harlem","Failed (any reason)",3740
+2023-06-30,4,"Manhattan: Harlem","Initial inspections",11429
+2023-06-30,3,"Manhattan: East Village and Chinatown","City agency",528
+2023-06-30,3,"Manhattan: East Village and Chinatown","Private property",779
+2023-06-30,3,"Manhattan: East Village and Chinatown","Active rat signs",1069
+2023-06-30,3,"Manhattan: East Village and Chinatown","Failed (any reason)",1307
+2023-06-30,3,"Manhattan: East Village and Chinatown","Initial inspections",5305
+2023-12-31,2,"Bronx: Grand Concourse","City agency",627
+2023-12-31,2,"Bronx: Grand Concourse","Private property",2561
+2023-12-31,2,"Bronx: Grand Concourse","Active rat signs",2451
+2023-12-31,2,"Bronx: Grand Concourse","Failed (any reason)",3188
+2023-12-31,2,"Bronx: Grand Concourse","Initial inspections",9758
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","City agency",375
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Private property",4129
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Active rat signs",3984
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Failed (any reason)",4504
+2023-12-31,1,"Brooklyn: Bed Stuy and Bushwick","Initial inspections",15533
+2023-12-31,4,"Manhattan: Harlem","City agency",942
+2023-12-31,4,"Manhattan: Harlem","Private property",2501
+2023-12-31,4,"Manhattan: Harlem","Active rat signs",2677
+2023-12-31,4,"Manhattan: Harlem","Failed (any reason)",3443
+2023-12-31,4,"Manhattan: Harlem","Initial inspections",11430
+2023-12-31,3,"Manhattan: East Village and Chinatown","City agency",469
+2023-12-31,3,"Manhattan: East Village and Chinatown","Private property",783
+2023-12-31,3,"Manhattan: East Village and Chinatown","Active rat signs",1005
+2023-12-31,3,"Manhattan: East Village and Chinatown","Failed (any reason)",1252
+2023-12-31,3,"Manhattan: East Village and Chinatown","Initial inspections",5123
