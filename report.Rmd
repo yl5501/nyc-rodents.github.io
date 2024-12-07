@@ -1,0 +1,162 @@
+---
+title: "Report"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+## Motivation 
+  Imagine walking through your favorite park in NYC and unexpectedly encountering a rat scurrying by. This scenario not only disrupts the enjoyment of the space but also raises questions about the city's sanitation and pest control measures. These moments emphasize the importance of effective rodent management for a cleaner, safer, and more pleasant urban environment.
+
+  By delving into complaint patterns and intervention strategies, this project seeks to make NYC a cleaner, more welcoming city where residents and visitors no longer live in fear of sudden encounters with rodents. This effort supports the broader vision of enhancing urban life and reinforcing NYC's status as a leading global metropolis.
+
+
+## Related Work
+According to [NYC Health](https://www.nyc.gov/site/doh/health/health-topics/rats.page), rats pose challenges for residents, property owners, businesses, and entire communities. Their gnawing and burrowing can lead to structural damage, while their presence contaminates food, spreads disease, and diminishes overall quality of life.
+
+## Initial Questions
+* What are the temporal and spatial trends in rodent complaints?
+* How effective are extermination and inspection efforts in reducing complaints over time?
+* What insights can be derived from different complaint, inspection, and extermination outcomes?
+
+## Data
+* Source: The data being used for this project is downloaded from [NYC Open data](https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data).
+* Scraping Method: publicly available downlaods
+* Cleaning: 
+  - Standardizing column names.
+  - Converting the date column to a standard Date format.
+  - Removing duplicates.
+  - Dropping rows with missing values.
+  
+```{r}
+library(dplyr)
+library(lubridate)
+
+clean_data <- function(data) {
+  colnames(data) <- tolower(colnames(data))
+  
+  data <- data %>% 
+    rename_with(~ gsub("zoneid", "zone_id", .x)) %>%
+    rename_with(~ gsub("rmz", "region", .x)) %>%
+    rename_with(~ gsub("complainttype", "type", .x)) %>%
+    rename_with(~ gsub("number", "count", .x)) %>%
+    rename_with(~ gsub("thing", "type", .x)) # Adjust for exterminator visits
+  
+  if ("date" %in% colnames(data)) {
+    data <- data %>%
+      mutate(date = mdy(date)) # Ensure date format is consistent
+  }
+  
+  data <- data %>% distinct()
+
+  data <- data %>% filter(complete.cases(.))
+  
+  return(data)
+}
+
+complaints_data <- read.csv("311-complaints.csv")
+inspections_data <- read.csv("compliance-inspections.csv")
+exterminator_data <- read.csv("exterminator-visits.csv")
+initial_inspections_data <- read.csv("initial-inspections.csv")
+
+complaints_clean <- clean_data(complaints_data)
+inspections_clean <- clean_data(inspections_data)
+exterminator_clean <- clean_data(exterminator_data)
+initial_inspections_clean <- clean_data(initial_inspections_data)
+
+write.csv(complaints_clean, "cleaned_311_complaints.csv", row.names = FALSE)
+write.csv(inspections_clean, "cleaned_compliance_inspections.csv", row.names = FALSE)
+write.csv(exterminator_clean, "cleaned_exterminator_visits.csv", row.names = FALSE)
+write.csv(initial_inspections_clean, "cleaned_initial_inspections.csv", row.names = FALSE)
+
+summary(complaints_clean)
+summary(inspections_clean)
+summary(exterminator_clean)
+summary(initial_inspections_clean)
+
+```
+
+
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+# Load cleaned data (replace file paths with the cleaned dataset)
+complaints_clean <- read.csv("cleaned_311_complaints.csv")
+
+# Convert `date` to Date type
+complaints_clean <- complaints_clean %>%
+  mutate(date = as.Date(date))
+
+# Extract temporal features (Year and Month)
+complaints_clean <- complaints_clean %>%
+  mutate(
+    year = year(date),
+    month = month(date, label = TRUE)
+  )
+
+# 1. Temporal Trends: Rodent Complaints Over Time
+temporal_trend <- complaints_clean %>%
+  group_by(year, month) %>%
+  summarise(total_complaints = sum(count, na.rm = TRUE)) %>%
+  arrange(year, month)
+
+# Plot temporal trends
+ggplot(temporal_trend, aes(x = interaction(year, month, sep = "-"), y = total_complaints, group = year)) +
+  geom_line(color = "blue", size = 1) +
+  labs(
+    title = "Temporal Trends in Rodent Complaints",
+    x = "Year-Month",
+    y = "Total Complaints"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# 2. Spatial Trends: Rodent Complaints by Region
+spatial_trend <- complaints_clean %>%
+  group_by(region) %>%
+  summarise(total_complaints = sum(count, na.rm = TRUE)) %>%
+  arrange(desc(total_complaints))
+
+# Plot spatial trends
+ggplot(spatial_trend, aes(x = reorder(region, total_complaints), y = total_complaints, fill = region)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(
+    title = "Spatial Trends in Rodent Complaints by Region",
+    x = "Region",
+    y = "Total Complaints"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# 3. Temporal Trends by Region
+temporal_spatial_trend <- complaints_clean %>%
+  group_by(region, year, month) %>%
+  summarise(total_complaints = sum(count, na.rm = TRUE)) %>%
+  arrange(region, year, month)
+
+# Plot temporal trends for top 5 regions
+top_regions <- spatial_trend %>%
+  top_n(5, total_complaints) %>%
+  pull(region)
+
+temporal_spatial_filtered <- temporal_spatial_trend %>%
+  filter(region %in% top_regions)
+
+ggplot(temporal_spatial_filtered, aes(x = interaction(year, month, sep = "-"), y = total_complaints, color = region, group = region)) +
+  geom_line(size = 1) +
+  labs(
+    title = "Temporal Trends in Rodent Complaints for Top Regions",
+    x = "Year-Month",
+    y = "Total Complaints"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
