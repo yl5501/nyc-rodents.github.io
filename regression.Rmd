@@ -1,0 +1,131 @@
+---
+title: "Regression Analysis"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+## 
+
+### Defining variables
+Dependent Variable (Y): Number of complaints (count from the 311 complaints dataset).
+Independent Variables (X):
+Exterminator visits (count from the exterminator visits dataset).
+Compliance inspections (count from the compliance inspections dataset).
+
+Steps:
+Merge the datasets based on <code>date</code> and <code>zone_id</code>.
+Run a linear regression model to assess how independent variables influence complaints.
+Evaluate the model.
+
+<details>
+<summary>Click to view the detailed code</summary>
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(broom)  # For model summary
+
+# Load cleaned datasets
+complaints_data <- read.csv("cleaned_311_complaints.csv")
+exterminator_data <- read.csv("cleaned_exterminator_visits.csv")
+inspections_data <- read.csv("cleaned_compliance_inspections.csv")
+
+# Aggregate complaints data
+complaints_data <- complaints_data %>%
+  group_by(date, zone_id, region) %>%
+  summarise(complaints = sum(count, na.rm = TRUE), .groups = "drop")
+
+# Aggregate exterminator visits data
+exterminator_data <- exterminator_data %>%
+  group_by(date, zone_id, region) %>%
+  summarise(exterminator_visits = sum(count, na.rm = TRUE), .groups = "drop")
+
+# Aggregate compliance inspections data
+inspections_data <- inspections_data %>%
+  group_by(date, zone_id, region) %>%
+  summarise(compliance_inspections = sum(count, na.rm = TRUE), .groups = "drop")
+
+# Merge datasets by date, zone_id, and region
+merged_data <- complaints_data %>%
+  inner_join(exterminator_data, by = c("date", "zone_id", "region")) %>%
+  inner_join(inspections_data, by = c("date", "zone_id", "region"))
+
+
+
+```
+</details>
+
+```{r}
+# Check the structure of the merged dataset
+summary(merged_data)
+
+```
+<details>
+<summary>Click to view the detailed code</summary>
+```{r}
+# Run Linear Regression: Complaints ~ Exterminator Visits + Compliance Inspections
+regression_model <- lm(complaints ~ exterminator_visits + compliance_inspections, data = merged_data)
+
+# Display Model Summary
+model_summary <- summary(regression_model)
+print(model_summary)
+
+# Extract Regression Coefficients
+coefficients <- broom::tidy(regression_model)
+print(coefficients)
+
+# Evaluate Model Fit: Extract R-squared and Adjusted R-squared
+r_squared <- model_summary$r.squared
+adjusted_r_squared <- model_summary$adj.r.squared
+
+# Print R-squared and Adjusted R-squared
+cat("R-squared: ", r_squared, "\n")
+cat("Adjusted R-squared: ", adjusted_r_squared, "\n")
+
+```
+</details>
+
+```{r}
+# Visualize Regression Relationships
+
+# Scatter plot with regression line for exterminator visits
+ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
+  geom_point(alpha = 0.6, color = "blue") +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  labs(
+    title = "Relationship Between Exterminator Visits and Complaints",
+    x = "Exterminator Visits",
+    y = "Number of Complaints"
+  ) +
+  theme_minimal()
+
+# Scatter plot with regression line for compliance inspections
+ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
+  geom_point(alpha = 0.6, color = "green") +
+  geom_smooth(method = "lm", color = "purple", se = TRUE) +
+  labs(
+    title = "Relationship Between Compliance Inspections and Complaints",
+    x = "Compliance Inspections",
+    y = "Number of Complaints"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+# Fit the regression model
+regression_model <- lm(complaints ~ exterminator_visits + compliance_inspections, data = merged_data)
+
+# Display the full model summary
+model_summary <- summary(regression_model)
+
+# Extract R-squared and Adjusted R-squared
+r_squared <- model_summary$r.squared
+adjusted_r_squared <- model_summary$adj.r.squared
+
+# Print the values
+cat("R-squared: ", r_squared, "\n")
+cat("Adjusted R-squared: ", adjusted_r_squared, "\n")
+```
+
