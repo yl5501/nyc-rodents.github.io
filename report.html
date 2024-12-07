@@ -16,7 +16,7 @@
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -333,6 +333,9 @@ div.tocify {
   <a href="analysis.html">Exploratory Analysis</a>
 </li>
 <li>
+  <a href="regression.html">Regression Analysis</a>
+</li>
+<li>
   <a href="mailto:yl5501@cumc.columbia.edu">
     <span class="fa fa-envelope fa-lg"></span>
      
@@ -366,11 +369,13 @@ enjoyment of the space but also raises questions about the city’s
 sanitation and pest control measures. These moments emphasize the
 importance of effective rodent management for a cleaner, safer, and more
 pleasant urban environment.</p>
-<p>By delving into complaint patterns and intervention strategies, this
+By delving into complaint patterns and intervention strategies, this
 project seeks to make NYC a cleaner, more welcoming city where residents
 and visitors no longer live in fear of sudden encounters with rodents.
 This effort supports the broader vision of enhancing urban life and
-reinforcing NYC’s status as a leading global metropolis.</p>
+reinforcing NYC’s status as a leading global metropolis.
+<p>
+<p><br></p>
 </div>
 <div id="related-work" class="section level2">
 <h2>Related Work</h2>
@@ -380,6 +385,16 @@ Health</a>, rats pose challenges for residents, property owners,
 businesses, and entire communities. Their gnawing and burrowing can lead
 to structural damage, while their presence contaminates food, spreads
 disease, and diminishes overall quality of life.</p>
+<p><a
+href="https://www.cdc.gov/healthy-pets/rodent-control/index.html">CDC</a>
+also mentions that rodent droppings, urine, and saliva can contaminate
+the air or food, spreading diseases when inhaled or consumed.
+Additionally, rodents often carry parasites like ticks, mites, or fleas
+that can transmit illnesses. Many of these diseases do not cause visible
+symptoms in rodents, making it impossible to determine if a rodent is
+infected simply by its appearance.</p>
+<p>
+<p><br></p>
 </div>
 <div id="initial-questions" class="section level2">
 <h2>Initial Questions</h2>
@@ -389,7 +404,11 @@ disease, and diminishes overall quality of life.</p>
 complaints over time?</li>
 <li>What insights can be derived from different complaint, inspection,
 and extermination outcomes?</li>
+<li>How do predictors differ in their effects across areas with varying
+complaint severity?</li>
 </ul>
+<p>
+<p><br></p>
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
@@ -397,7 +416,7 @@ and extermination outcomes?</li>
 <li>Source: The data being used for this project is downloaded from <a
 href="https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data">NYC
 Open data</a>.</li>
-<li>Scraping Method: publicly available downlaods</li>
+<li>Scraping Method: publicly available downloads</li>
 <li>Cleaning:
 <ul>
 <li>Standardizing column names.</li>
@@ -406,10 +425,26 @@ Open data</a>.</li>
 <li>Dropping rows with missing values.</li>
 </ul></li>
 </ul>
-<pre class="r"><code>library(dplyr)
-library(lubridate)
-
-clean_data &lt;- function(data) {
+<details>
+<summary>
+Click to view the detailed code
+</summary>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>clean_data &lt;- function(data) {
   colnames(data) &lt;- tolower(colnames(data))
   
   data &lt;- data %&gt;% 
@@ -444,9 +479,39 @@ initial_inspections_clean &lt;- clean_data(initial_inspections_data)
 write.csv(complaints_clean, &quot;cleaned_311_complaints.csv&quot;, row.names = FALSE)
 write.csv(inspections_clean, &quot;cleaned_compliance_inspections.csv&quot;, row.names = FALSE)
 write.csv(exterminator_clean, &quot;cleaned_exterminator_visits.csv&quot;, row.names = FALSE)
-write.csv(initial_inspections_clean, &quot;cleaned_initial_inspections.csv&quot;, row.names = FALSE)
-
-summary(complaints_clean)</code></pre>
+write.csv(initial_inspections_clean, &quot;cleaned_initial_inspections.csv&quot;, row.names = FALSE)</code></pre>
+</details>
+<p>
+<p><br></p>
+<div id="overview-of-datasets" class="section level3">
+<h3>Overview of Datasets</h3>
+<div id="rodent-complaints" class="section level4">
+<h4>311 Rodent Complaints:</h4>
+<p>This dataset contains reports of rodent complaints made through NYC’s
+311 system. It includes information such as the location, date, and type
+of complaint, serving as the foundation for understanding temporal and
+spatial trends in rodent activity across the city.</p>
+</div>
+<div id="exterminator-visits" class="section level4">
+<h4>Exterminator Visits:</h4>
+<p>Records of exterminator visits by city agencies to address rodent
+infestations. This dataset allows us to evaluate the impact of
+extermination efforts on complaint levels and assess how these
+interventions vary across neighborhoods.</p>
+</div>
+<div id="compliance-inspections" class="section level4">
+<h4>Compliance Inspections:</h4>
+<p>Details of inspections conducted to ensure compliance with rodent
+prevention and control measures. These data help us analyze whether
+proactive measures, such as compliance enforcement, contribute to
+reducing rodent complaints.</p>
+</div>
+<div id="initial-inspections" class="section level4">
+<h4>Initial Inspections:</h4>
+<p>Data on initial inspections carried out to identify rodent issues and
+assess the need for intervention. This dataset supports the analysis of
+preemptive efforts and their correlation with subsequent complaints.</p>
+<pre class="r"><code>summary(complaints_clean)</code></pre>
 <pre><code>##       date               zone_id        region              type          
 ##  Min.   :2022-06-30   Min.   :1.00   Length:64          Length:64         
 ##  1st Qu.:2022-11-15   1st Qu.:1.75   Class :character   Class :character  
@@ -506,92 +571,38 @@ summary(complaints_clean)</code></pre>
 ##  Mean   : 3615.5  
 ##  3rd Qu.: 3868.5  
 ##  Max.   :15564.0</code></pre>
-<pre class="r"><code># Load necessary libraries
-library(dplyr)
-library(ggplot2)
-library(lubridate)
-
-# Load cleaned data (replace file paths with the cleaned dataset)
-complaints_clean &lt;- read.csv(&quot;cleaned_311_complaints.csv&quot;)
-
-# Convert `date` to Date type
-complaints_clean &lt;- complaints_clean %&gt;%
-  mutate(date = as.Date(date))
-
-# Extract temporal features (Year and Month)
-complaints_clean &lt;- complaints_clean %&gt;%
-  mutate(
-    year = year(date),
-    month = month(date, label = TRUE)
-  )
-
-# 1. Temporal Trends: Rodent Complaints Over Time
-temporal_trend &lt;- complaints_clean %&gt;%
-  group_by(year, month) %&gt;%
-  summarise(total_complaints = sum(count, na.rm = TRUE)) %&gt;%
-  arrange(year, month)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;year&#39;. You can override
-## using the `.groups` argument.</code></pre>
-<pre class="r"><code># Plot temporal trends
-ggplot(temporal_trend, aes(x = interaction(year, month, sep = &quot;-&quot;), y = total_complaints, group = year)) +
-  geom_line(color = &quot;blue&quot;, size = 1) +
-  labs(
-    title = &quot;Temporal Trends in Rodent Complaints&quot;,
-    x = &quot;Year-Month&quot;,
-    y = &quot;Total Complaints&quot;
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
-<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2
-## 3.4.0.
-## ℹ Please use `linewidth` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this
-## warning was generated.</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre class="r"><code># 2. Spatial Trends: Rodent Complaints by Region
-spatial_trend &lt;- complaints_clean %&gt;%
-  group_by(region) %&gt;%
-  summarise(total_complaints = sum(count, na.rm = TRUE)) %&gt;%
-  arrange(desc(total_complaints))
-
-# Plot spatial trends
-ggplot(spatial_trend, aes(x = reorder(region, total_complaints), y = total_complaints, fill = region)) +
-  geom_bar(stat = &quot;identity&quot;) +
-  coord_flip() +
-  labs(
-    title = &quot;Spatial Trends in Rodent Complaints by Region&quot;,
-    x = &quot;Region&quot;,
-    y = &quot;Total Complaints&quot;
-  ) +
-  theme_minimal() +
-  theme(legend.position = &quot;none&quot;)</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
-<pre class="r"><code># 3. Temporal Trends by Region
-temporal_spatial_trend &lt;- complaints_clean %&gt;%
-  group_by(region, year, month) %&gt;%
-  summarise(total_complaints = sum(count, na.rm = TRUE)) %&gt;%
-  arrange(region, year, month)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;region&#39;, &#39;year&#39;. You can
-## override using the `.groups` argument.</code></pre>
-<pre class="r"><code># Plot temporal trends for top 5 regions
-top_regions &lt;- spatial_trend %&gt;%
-  top_n(5, total_complaints) %&gt;%
-  pull(region)
-
-temporal_spatial_filtered &lt;- temporal_spatial_trend %&gt;%
-  filter(region %in% top_regions)
-
-ggplot(temporal_spatial_filtered, aes(x = interaction(year, month, sep = &quot;-&quot;), y = total_complaints, color = region, group = region)) +
-  geom_line(size = 1) +
-  labs(
-    title = &quot;Temporal Trends in Rodent Complaints for Top Regions&quot;,
-    x = &quot;Year-Month&quot;,
-    y = &quot;Total Complaints&quot;
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-2-3.png" width="672" /></p>
+<p>
+<p><br></p>
+</div>
+</div>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<p>The temporal and spatial trends in the 311 complaints dataset
+revealed that rodent activity is not evenly distributed across
+neighborhoods or seasons, with certain regions such as Harlem and the
+Bronx reporting higher complaints. These findings highlight the need for
+targeted pest control efforts in high-complaint areas.</p>
+<p>The linear regression analysis showed that exterminator visits have a
+significant positive association with rodent complaints, indicating that
+areas with more extermination efforts tend to experience higher
+complaint levels. This suggests that exterminator visits are likely
+concentrated in neighborhoods with severe infestations, reflecting a
+reactive approach to rodent control. Compliance inspections, on the
+other hand, showed a weak and statistically insignificant negative
+association with complaints, addressing the need for further
+investigation into how compliance measures can be more effectively
+implemented.</p>
+<p>The introduction of interaction term between exterminator visits and
+season demonstrated that the impact of exterminator visits is relatively
+consistent across seasons, but subtle differences highlight the
+importance of understanding seasonal factors in resource allocation. The
+quantile regression analysis provided additional depth by showing that
+the effect of exterminator visits is stronger at higher quantiles of
+complaints, indicating that these interventions are more impactful in
+areas with severe rodent problems. This underscores the importance of
+prioritizing resources in neighborhoods with the most significant
+infestations.</p>
 </div>
 
 

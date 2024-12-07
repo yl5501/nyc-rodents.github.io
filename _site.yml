@@ -17,4 +17,4 @@ navbar:
       href: "https://github.com/yl5501/"
 output:
   html_document:
-    theme: cerulean
+    theme: flatly

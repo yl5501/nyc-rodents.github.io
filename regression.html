@@ -16,7 +16,7 @@
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -35,6 +35,14 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -363,10 +371,19 @@ div.tocify {
 
 <div id="defining-variables" class="section level3">
 <h3>Defining variables</h3>
-<p>Dependent Variable (Y): Number of complaints (count from the 311
-complaints dataset). Independent Variables (X): Exterminator visits
-(count from the exterminator visits dataset). Compliance inspections
-(count from the compliance inspections dataset).</p>
+<div id="dependent-variable-y" class="section level5">
+<h5>Dependent Variable (Y):</h5>
+<ul>
+<li>Number of complaints (from the 311 complaints dataset).</li>
+</ul>
+</div>
+<div id="independent-variables-x" class="section level5">
+<h5>Independent Variables (X):</h5>
+<ul>
+<li>Exterminator visits (from the exterminator visits dataset).</li>
+<li>Compliance inspections (from the compliance inspections
+dataset).</li>
+</ul>
 <p>Steps:</p>
 <ul>
 <li>Merge the datasets based on <code>date</code> and
@@ -458,8 +475,13 @@ print(model_summary)</code></pre>
 ## Multiple R-squared:  0.4046, Adjusted R-squared:  0.313 
 ## F-statistic: 4.417 on 2 and 13 DF,  p-value: 0.03437</code></pre>
 </details>
+</div>
+<div id="the-fitted-model" class="section level5">
+<h5>The fitted model:</h5>
+Complaints=377.12+0.26×Exterminator Visits−0.08×Compliance Inspections
 <p>
 <p><br></p>
+</div>
 </div>
 <div id="coefficient-analysis-from-broomtidy" class="section level3">
 <h3>Coefficient Analysis (from <code>broom::tidy()</code>)</h3>
@@ -508,7 +530,9 @@ contribute to complaints.</li>
 <li>Adjusted R-squared: 0.3130<br> After accounting for the number of
 predictors, the model explains 31.3% of the variability in complaints.
 The relatively lower value of adjusted R-squared indicates that some
-variance may be attributed to noise or irrelevant predictors.</li>
+variance may be attributed to noise or irrelevant predictors.
+<p>
+<br></li>
 </ul>
 </div>
 <div id="visualize-regression-relationships" class="section level3">
@@ -530,30 +554,86 @@ not statistically significant (p &gt; 0.05).</li>
 <li>The confidence interval is relatively wide, reflecting the weak
 relationship.</li>
 </ul>
-<pre class="r"><code># Scatter plot with regression line for exterminator visits
-ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
-  geom_point(alpha = 0.6, color = &quot;blue&quot;) +
-  geom_smooth(method = &quot;lm&quot;, color = &quot;red&quot;, se = TRUE) +
-  labs(
+<details>
+<summary>
+Click to view the detailed code
+</summary>
+<pre class="r"><code># Load necessary libraries
+library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code># Create an interactive scatter plot with regression line for exterminator visits
+scatter_exterminator &lt;- plot_ly(
+  data = merged_data,
+  x = ~exterminator_visits,
+  y = ~complaints,
+  type = &quot;scatter&quot;,
+  mode = &quot;markers&quot;,
+  marker = list(color = &quot;blue&quot;, opacity = 0.6)
+) %&gt;%
+  add_trace(
+    x = ~exterminator_visits,
+    y = fitted(lm(complaints ~ exterminator_visits, data = merged_data)),
+    type = &quot;scatter&quot;,
+    mode = &quot;lines&quot;,
+    line = list(color = &quot;red&quot;),
+    name = &quot;Regression Line&quot;
+  ) %&gt;%
+  layout(
     title = &quot;Relationship Between Exterminator Visits and Complaints&quot;,
-    x = &quot;Exterminator Visits&quot;,
-    y = &quot;Number of Complaints&quot;
-  ) +
-  theme_minimal()</code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<pre class="r"><code># Scatter plot with regression line for compliance inspections
-ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
-  geom_point(alpha = 0.6, color = &quot;green&quot;) +
-  geom_smooth(method = &quot;lm&quot;, color = &quot;purple&quot;, se = TRUE) +
-  labs(
+    xaxis = list(title = &quot;Exterminator Visits&quot;),
+    yaxis = list(title = &quot;Number of Complaints&quot;)
+  )
+
+# Display the plot</code></pre>
+</details>
+<pre class="r"><code>scatter_exterminator</code></pre>
+<pre><code>## A marker object has been specified, but markers is not in the mode
+## Adding markers to the mode...</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ac2b8ef127e6ffd69be5" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ac2b8ef127e6ffd69be5">{"x":{"visdat":{"1587278df5fd":["function () ","plotlyVisDat"]},"cur_data":"1587278df5fd","attrs":{"1587278df5fd":{"x":{},"y":{},"mode":"markers","marker":{"color":"blue","opacity":0.59999999999999998},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"},"1587278df5fd.1":{"x":{},"y":[1170.1231929537703,609.61155275124474,636.95767587396597,863.44397167564489,1167.2711433029342,939.10717123605764,645.01052194691454,1183.544603075351,1279.1721501916154,971.65409078089147,683.09377316690063,1660.1724300179953,1741.7074965065999,1234.8814967903982,471.70656375200025,1462.5421659777155],"mode":"lines","marker":{"color":"blue","opacity":0.59999999999999998},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","line":{"color":"red"},"name":"Regression Line","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Relationship Between Exterminator Visits and Complaints","xaxis":{"domain":[0,1],"automargin":true,"title":"Exterminator Visits"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Number of Complaints"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[5235,1894,2057,3407,5218,3858,2105,5315,5885,4052,2332,8156,8642,5621,1072,6978],"y":[1165,762,416,1943,984,763,422,1988,1180,576,332,1743,970,683,395,2398],"mode":"markers","marker":{"color":"blue","opacity":0.59999999999999998,"line":{"color":"rgba(31,119,180,1)"}},"type":"scatter","error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[5235,1894,2057,3407,5218,3858,2105,5315,5885,4052,2332,8156,8642,5621,1072,6978],"y":[1170.1231929537703,609.61155275124474,636.95767587396597,863.44397167564489,1167.2711433029342,939.10717123605764,645.01052194691454,1183.544603075351,1279.1721501916154,971.65409078089147,683.09377316690063,1660.1724300179953,1741.7074965065999,1234.8814967903982,471.70656375200025,1462.5421659777155],"mode":"lines+markers","marker":{"color":"blue","opacity":0.59999999999999998,"line":{"color":"rgba(255,127,14,1)"}},"type":"scatter","line":{"color":"red"},"name":"Regression Line","error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<details>
+<summary>
+Click to view the detailed code
+</summary>
+<pre class="r"><code>scatter_compliance &lt;- plot_ly(
+  data = merged_data,
+  x = ~compliance_inspections,
+  y = ~complaints,
+  type = &quot;scatter&quot;,
+  mode = &quot;markers&quot;,
+  marker = list(color = &quot;green&quot;, opacity = 0.6)
+) %&gt;%
+  add_trace(
+    x = ~compliance_inspections,
+    y = fitted(lm(complaints ~ compliance_inspections, data = merged_data)),
+    type = &quot;scatter&quot;,
+    mode = &quot;lines&quot;,
+    line = list(color = &quot;purple&quot;),
+    name = &quot;Regression Line&quot;
+  ) %&gt;%
+  layout(
     title = &quot;Relationship Between Compliance Inspections and Complaints&quot;,
-    x = &quot;Compliance Inspections&quot;,
-    y = &quot;Number of Complaints&quot;
-  ) +
-  theme_minimal()</code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+    xaxis = list(title = &quot;Compliance Inspections&quot;),
+    yaxis = list(title = &quot;Number of Complaints&quot;)
+  )</code></pre>
+</details>
+<pre class="r"><code>scatter_compliance</code></pre>
+<pre><code>## A marker object has been specified, but markers is not in the mode
+## Adding markers to the mode...</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ebc7b997944bfb6853cc" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ebc7b997944bfb6853cc">{"x":{"visdat":{"1587262bcf1c":["function () ","plotlyVisDat"]},"cur_data":"1587262bcf1c","attrs":{"1587262bcf1c":{"x":{},"y":{},"mode":"markers","marker":{"color":"green","opacity":0.59999999999999998},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"},"1587262bcf1c.1":{"x":{},"y":[1288.4909574124974,973.76953694292081,743.4071883327922,956.60556994121487,1289.294377144492,1115.8287531910819,772.03814605478647,939.07641215223862,1164.9103950002152,1058.8589903769093,762.32407111339558,1087.78210072872,1525.9380072956706,1094.7937638443104,772.11118421224069,1174.7705462565141],"mode":"lines","marker":{"color":"green","opacity":0.59999999999999998},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","line":{"color":"purple"},"name":"Regression Line","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Relationship Between Compliance Inspections and Complaints","xaxis":{"domain":[0,1],"automargin":true,"title":"Compliance Inspections"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Number of Complaints"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[9160,4851,1697,4616,9171,6796,2089,4376,7468,6016,1956,6412,12411,6508,2090,7603],"y":[1165,762,416,1943,984,763,422,1988,1180,576,332,1743,970,683,395,2398],"mode":"markers","marker":{"color":"green","opacity":0.59999999999999998,"line":{"color":"rgba(31,119,180,1)"}},"type":"scatter","error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[9160,4851,1697,4616,9171,6796,2089,4376,7468,6016,1956,6412,12411,6508,2090,7603],"y":[1288.4909574124974,973.76953694292081,743.4071883327922,956.60556994121487,1289.294377144492,1115.8287531910819,772.03814605478647,939.07641215223862,1164.9103950002152,1058.8589903769093,762.32407111339558,1087.78210072872,1525.9380072956706,1094.7937638443104,772.11118421224069,1174.7705462565141],"mode":"lines+markers","marker":{"color":"green","opacity":0.59999999999999998,"line":{"color":"rgba(255,127,14,1)"}},"type":"scatter","line":{"color":"purple"},"name":"Regression Line","error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>
+<p><br></p>
 </div>
 </div>
 <div id="adding-aditional-time-predictor" class="section level3">
@@ -662,16 +742,32 @@ availability could be a potential reason for accounting this pattern.
 Although seasonal effect is not significant in this model, further
 investigation into weather and food availability for rodents may reveal
 actionable insights.</p>
-<pre class="r"><code># Visualize the effect of season on complaints
-ggplot(merged_data, aes(x = season, y = complaints, fill = season)) +
-  geom_boxplot() +
-  labs(
+<details>
+<summary>
+Click to view the detailed code
+</summary>
+<pre class="r"><code>library(plotly)
+
+plotly_boxplot &lt;- plot_ly(
+  data = merged_data,
+  x = ~season,
+  y = ~complaints,
+  type = &quot;box&quot;,
+  color = ~season,
+  colors = c(&quot;Winter&quot; = &quot;blue&quot;, &quot;Summer&quot; = &quot;orange&quot;)
+) %&gt;%
+  layout(
     title = &quot;Seasonal Effect on Complaints&quot;,
-    x = &quot;Season&quot;,
-    y = &quot;Number of Complaints&quot;
-  ) +
-  theme_minimal()</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+    xaxis = list(title = &quot;Season&quot;),
+    yaxis = list(title = &quot;Number of Complaints&quot;),
+    showlegend = FALSE
+  )</code></pre>
+</details>
+<pre class="r"><code>plotly_boxplot</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-3d653071e02c855bf4bc" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-3d653071e02c855bf4bc">{"x":{"visdat":{"158725a85def9":["function () ","plotlyVisDat"]},"cur_data":"158725a85def9","attrs":{"158725a85def9":{"x":{},"y":{},"color":{},"colors":["blue","orange"],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"box"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Seasonal Effect on Complaints","xaxis":{"domain":[0,1],"automargin":true,"title":"Season","type":"category","categoryorder":"array","categoryarray":["Winter","Spring","Summer","Fall"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Number of Complaints"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"fillcolor":"rgba(0,0,255,0.5)","x":["Winter","Winter","Winter","Winter","Winter","Winter","Winter","Winter"],"y":[984,763,422,1988,970,683,395,2398],"type":"box","name":"Winter","marker":{"color":"rgba(0,0,255,1)","line":{"color":"rgba(0,0,255,1)"}},"line":{"color":"rgba(0,0,255,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(255,165,0,0.5)","x":["Summer","Summer","Summer","Summer","Summer","Summer","Summer","Summer"],"y":[1165,762,416,1943,1180,576,332,1743],"type":"box","name":"Summer","marker":{"color":"rgba(255,165,0,1)","line":{"color":"rgba(255,165,0,1)"}},"line":{"color":"rgba(255,165,0,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>
+<p><br></p>
 </div>
 </div>
 <div id="adding-interaction-term-exterminator_visits-season"
@@ -736,36 +832,77 @@ print(coefficients_interaction)</code></pre>
 ## 4 compliance_inspections            -0.0888    0.0877    -1.01   0.333 
 ## 5 month                             NA        NA         NA     NA     
 ## 6 exterminator_visits:seasonSummer  -0.0342    0.139     -0.245  0.811</code></pre>
-</details>
-<pre class="r"><code># Visualize the interaction effect
-ggplot(merged_data, aes(x = exterminator_visits, y = complaints, color = season)) +
-  geom_point(alpha = 0.6) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE) +
-  labs(
+<pre class="r"><code># Create a scatter plot with regression lines for each season
+interaction_plot &lt;- plot_ly(
+  data = merged_data,
+  x = ~exterminator_visits,
+  y = ~complaints,
+  color = ~season,
+  type = &quot;scatter&quot;,
+  mode = &quot;markers&quot;,
+  marker = list(opacity = 0.6)
+) %&gt;%
+  # Add regression lines for each season
+  add_trace(
+    data = merged_data %&gt;% filter(season == &quot;Winter&quot;),
+    x = ~exterminator_visits,
+    y = fitted(lm(complaints ~ exterminator_visits, data = merged_data %&gt;% filter(season == &quot;Winter&quot;))),
+    type = &quot;scatter&quot;,
+    mode = &quot;lines&quot;,
+    line = list(color = &quot;blue&quot;, dash = &quot;solid&quot;),
+    name = &quot;Winter Regression&quot;
+  ) %&gt;%
+  add_trace(
+    data = merged_data %&gt;% filter(season == &quot;Summer&quot;),
+    x = ~exterminator_visits,
+    y = fitted(lm(complaints ~ exterminator_visits, data = merged_data %&gt;% filter(season == &quot;Summer&quot;))),
+    type = &quot;scatter&quot;,
+    mode = &quot;lines&quot;,
+    line = list(color = &quot;orange&quot;, dash = &quot;solid&quot;),
+    name = &quot;Summer Regression&quot;
+  ) %&gt;%
+  layout(
     title = &quot;Interaction Between Exterminator Visits and Season&quot;,
-    x = &quot;Exterminator Visits&quot;,
-    y = &quot;Number of Complaints&quot;,
-    color = &quot;Season&quot;
-  ) +
-  theme_minimal()</code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+    xaxis = list(title = &quot;Exterminator Visits&quot;),
+    yaxis = list(title = &quot;Number of Complaints&quot;),
+    legend = list(title = list(text = &quot;Season&quot;))
+  )</code></pre>
+</details>
+<p>``</p>
+<pre class="r"><code>interaction_plot</code></pre>
+<pre><code>## A marker object has been specified, but markers is not in the mode
+## Adding markers to the mode...
+## A marker object has been specified, but markers is not in the mode
+## Adding markers to the mode...</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-72e14842b6655b9ed60b" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-72e14842b6655b9ed60b">{"x":{"visdat":{"1587235ae99ee":["function () ","plotlyVisDat"],"1587259fbf3ca":["function () ","data"],"158722c4280ed":["function () ","data"]},"cur_data":"158722c4280ed","attrs":{"1587235ae99ee":{"x":{},"y":{},"mode":"markers","marker":{"opacity":0.59999999999999998},"color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"},"1587259fbf3ca":{"x":{},"y":[1137.1174459451681,908.23914547381241,613.22174788095435,1153.4418541405516,1713.3522259554052,1204.9394717466066,439.37521524352019,1433.3128936139815],"mode":"lines","marker":{"opacity":0.59999999999999998},"color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","line":{"color":"blue","dash":"solid"},"name":"Winter Regression","inherit":true},"158722c4280ed":{"x":{},"y":[1205.5296729884283,629.75669853179238,657.84738839603392,890.50034125938578,1317.547761404116,1001.6567520718761,705.23965657190183,1708.9217287764657],"mode":"lines","marker":{"opacity":0.59999999999999998},"color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","line":{"color":"orange","dash":"solid"},"name":"Summer Regression","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Interaction Between Exterminator Visits and Season","xaxis":{"domain":[0,1],"automargin":true,"title":"Exterminator Visits"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Number of Complaints"},"legend":{"title":{"text":"Season"}},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[5218,3858,2105,5315,8642,5621,1072,6978],"y":[984,763,422,1988,970,683,395,2398],"mode":"markers","marker":{"color":"rgba(102,194,165,1)","opacity":0.59999999999999998,"line":{"color":"rgba(102,194,165,1)"}},"type":"scatter","name":"Winter","textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[5235,1894,2057,3407,5885,4052,2332,8156],"y":[1165,762,416,1943,1180,576,332,1743],"mode":"markers","marker":{"color":"rgba(141,160,203,1)","opacity":0.59999999999999998,"line":{"color":"rgba(141,160,203,1)"}},"type":"scatter","name":"Summer","textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"line":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[5218,3858,2105,5315,8642,5621,1072,6978],"y":[1137.1174459451681,908.23914547381241,613.22174788095435,1153.4418541405516,1713.3522259554052,1204.9394717466066,439.37521524352019,1433.3128936139815],"mode":"lines+markers","marker":{"color":"rgba(102,194,165,1)","opacity":0.59999999999999998,"line":{"color":"rgba(102,194,165,1)"}},"type":"scatter","line":{"color":"blue","dash":"solid"},"name":"Winter Regression","textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[5235,1894,2057,3407,5885,4052,2332,8156],"y":[1205.5296729884283,629.75669853179238,657.84738839603392,890.50034125938578,1317.547761404116,1001.6567520718761,705.23965657190183,1708.9217287764657],"mode":"lines+markers","marker":{"color":"rgba(141,160,203,1)","opacity":0.59999999999999998,"line":{"color":"rgba(141,160,203,1)"}},"type":"scatter","line":{"color":"orange","dash":"solid"},"name":"Summer Regression","textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>
+<p><br></p>
 </div>
 <div id="quantile-regression" class="section level3">
 <h3>Quantile Regression</h3>
+<p>By analyzing quantile regression for this project, we could have a
+deeper understanding of how exterminator visits and compliance
+inspections impact rodent complaints across neighborhoods with varying
+levels of infestations. Unlike traditional regression, which focuses on
+average effects, it allows us to analyze how these predictors influence
+areas with low, moderate, and high complaint volumes. The results will
+reveal whether exterminator visits have a disproportionately higher
+effect in neighborhoods with severe rodent issues (upper quantiles)
+compared to areas with minimal complaints (lower quantiles). This
+insight is essential for NYC’s efforts to combat rodent infestations, as
+it helps the Department of Sanitation and related agencies tailor their
+strategies to specific community needs.</p>
 <details>
 <summary>
 Click to view the detailed code
 </summary>
-<pre class="r"><code># Load necessary library for quantile regression
-library(quantreg)</code></pre>
+<pre class="r"><code>library(quantreg)</code></pre>
 <pre><code>## Loading required package: SparseM</code></pre>
-<pre class="r"><code># Perform quantile regression at different quantiles (e.g., 0.25, 0.5, 0.75)
-quantile_model_25 &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.25, data = merged_data)
-quantile_model_50 &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.50, data = merged_data) # Median regression
+<pre class="r"><code>quantile_model_25 &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.25, data = merged_data)
+quantile_model_50 &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.50, data = merged_data) 
 quantile_model_75 &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.75, data = merged_data)
 
-# Display summaries of the models
 cat(&quot;Quantile Regression for Tau = 0.25\n&quot;)</code></pre>
 <pre><code>## Quantile Regression for Tau = 0.25</code></pre>
 <pre class="r"><code>print(summary(quantile_model_25))</code></pre>
@@ -822,37 +959,28 @@ print(quantile_coefficients)</code></pre>
 ## exterminator_visits      0.03678927   0.22482444   0.3352669
 ## compliance_inspections   0.02979157  -0.03568894  -0.1664253</code></pre>
 </details>
-<div id="effect-of-exterminator-visits" class="section level5">
-<h5>Effect of Exterminator Visits:</h5>
+<p>
+<p><br></p>
+<div id="effect-of-exterminator-visits" class="section level4">
+<h4>Effect of Exterminator Visits:</h4>
 <p>The relationship strengthens as complaints increase (from Tau = 0.25
 to Tau = 0.75). At high quantiles (e.g., Tau = 0.75), exterminator
 visits are significantly associated with complaints. This suggests
 exterminator visits are primarily deployed reactively in high-complaint
 areas, rather than proactively preventing complaints.</p>
 </div>
-<div id="effect-of-compliance-inspections" class="section level5">
-<h5>Effect of Compliance Inspections:</h5>
+<div id="effect-of-compliance-inspections" class="section level4">
+<h4>Effect of Compliance Inspections:</h4>
 <p>The negative relationship between compliance inspections and
 complaints becomes stronger at higher quantiles, potentially reflecting
 the efficacy of inspections in high-complaint areas. However, the
 effects are not statistically significant.</p>
 </div>
-<div id="heterogeneity-across-quantiles" class="section level5">
-<h5>Heterogeneity Across Quantiles:</h5>
+<div id="heterogeneity-across-quantiles" class="section level4">
+<h4>Heterogeneity Across Quantiles:</h4>
 <p>The results show substantial differences in the effects of predictors
 across quantiles, emphasizing the importance of quantile regression in
 capturing these variations.</p>
-</div>
-</div>
-<div id="recommendations" class="section level3">
-<h3>Recommendations</h3>
-<p>Target High-Complaint Areas: Given the strong relationship between
-exterminator visits and complaints at high quantiles, resources should
-focus on high-complaint areas to address rodent issues proactively.</p>
-<p>Enhance Inspection Effectiveness: Strengthen compliance inspection
-processes in areas with high complaints to validate the apparent (though
-not significant) reduction in complaints associated with
-inspections.</p>
 <pre class="r"><code>par(mar = c(3.9, 3.6, 4, 2) + 0.5)
 
 plot(
@@ -865,7 +993,47 @@ title(
   xlab = &quot;Quantiles of Complaints&quot;,
   ylab = &quot;Coefficient for Exterminator Visits&quot;
 )</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<img src="regression_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+<p>
+<p><br></p>
+</div>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>The quantile regression analysis reveals important insights into how
+exterminator visits influence rodent complaints across different levels
+of complaints. The coefficients for exterminator visits increase as we
+move from lower quantiles (0.25) to higher quantiles (0.75), suggesting
+that exterminator visits have a stronger impact in areas with a higher
+volume of complaints. At the 0.25 quantile, the effect is minimal
+(0.037), while at the 0.75 quantile, the coefficient rises to 0.335.
+This indicates that neighborhoods with more severe rodent problems
+(upper quantiles of complaints) are more sensitive to the number of
+exterminator visits.</p>
+<p>The confidence intervals, as shown in the shaded region of the plot,
+suggest that while the effect is statistically uncertain at lower
+quantiles, it becomes more pronounced and meaningful at higher
+quantiles. This pattern highlights the importance of targeting
+exterminator visits to areas experiencing higher rodent activity, where
+the intervention appears to have the most significant impact. This
+insight can help NYC optimize its pest control resources, ensuring that
+heavily impacted neighborhoods receive priority attention. By focusing
+on high-complaint regions, the city can better address rodent
+infestations and improve the effectiveness of its rodent management
+strategies.</p>
+</div>
+<div id="recommendations" class="section level2">
+<h2>Recommendations</h2>
+<ul>
+<li><p>Target High-Complaint Areas: Given the strong relationship
+between exterminator visits and complaints at high quantiles, resources
+should focus on high-complaint areas to address rodent issues
+proactively.</p></li>
+<li><p>Enhance Inspection Effectiveness: Strengthen compliance
+inspection processes in areas with high complaints to validate the
+apparent (though not significant) reduction in complaints associated
+with inspections.</p></li>
+</ul>
 </div>
 
 

@@ -7,11 +7,12 @@ output:
 ---
 
 ### Defining variables
-Dependent Variable (Y): 
-Number of complaints (count from the 311 complaints dataset).
-Independent Variables (X):
-Exterminator visits (count from the exterminator visits dataset).
-Compliance inspections (count from the compliance inspections dataset).
+##### Dependent Variable (Y): 
+* Number of complaints (from the 311 complaints dataset).
+
+##### Independent Variables (X):
+* Exterminator visits (from the exterminator visits dataset).
+* Compliance inspections (from the compliance inspections dataset).
 
 Steps:
 
@@ -67,6 +68,9 @@ print(model_summary)
 
 ```
 </details>
+
+##### The fitted model:
+Complaints=377.12+0.26×Exterminator Visits−0.08×Compliance Inspections
 <p><br>
 
 ### Coefficient Analysis (from <code>broom::tidy()</code>)
@@ -95,6 +99,7 @@ Approximately 40.46% of the variability in complaints is explained by the model.
 
 <p>* Adjusted R-squared: 0.3130<br>
 After accounting for the number of predictors, the model explains 31.3% of the variability in complaints. The relatively lower value of adjusted R-squared indicates that some variance may be attributed to noise or irrelevant predictors.
+<p><br>
 
 ### Visualize Regression Relationships
 
@@ -106,31 +111,79 @@ After accounting for the number of predictors, the model explains 31.3% of the v
 * The plot shows a slight negative trend, but the regression line is not statistically significant (p > 0.05).
 * The confidence interval is relatively wide, reflecting the weak relationship.
 
+<details>
+<summary>Click to view the detailed code</summary>
+```{r}
+# Load necessary libraries
+library(plotly)
 
+# Create an interactive scatter plot with regression line for exterminator visits
+scatter_exterminator <- plot_ly(
+  data = merged_data,
+  x = ~exterminator_visits,
+  y = ~complaints,
+  type = "scatter",
+  mode = "markers",
+  marker = list(color = "blue", opacity = 0.6)
+) %>%
+  add_trace(
+    x = ~exterminator_visits,
+    y = fitted(lm(complaints ~ exterminator_visits, data = merged_data)),
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "red"),
+    name = "Regression Line"
+  ) %>%
+  layout(
+    title = "Relationship Between Exterminator Visits and Complaints",
+    xaxis = list(title = "Exterminator Visits"),
+    yaxis = list(title = "Number of Complaints")
+  )
+
+# Display the plot
+```
+</details>
 
 ```{r}
-# Scatter plot with regression line for exterminator visits
-ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
-  geom_point(alpha = 0.6, color = "blue") +
-  geom_smooth(method = "lm", color = "red", se = TRUE) +
-  labs(
-    title = "Relationship Between Exterminator Visits and Complaints",
-    x = "Exterminator Visits",
-    y = "Number of Complaints"
-  ) +
-  theme_minimal()
+scatter_exterminator
 
-# Scatter plot with regression line for compliance inspections
-ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
-  geom_point(alpha = 0.6, color = "green") +
-  geom_smooth(method = "lm", color = "purple", se = TRUE) +
-  labs(
-    title = "Relationship Between Compliance Inspections and Complaints",
-    x = "Compliance Inspections",
-    y = "Number of Complaints"
-  ) +
-  theme_minimal()
 ```
+
+
+<details>
+<summary>Click to view the detailed code</summary>
+
+```{r}
+scatter_compliance <- plot_ly(
+  data = merged_data,
+  x = ~compliance_inspections,
+  y = ~complaints,
+  type = "scatter",
+  mode = "markers",
+  marker = list(color = "green", opacity = 0.6)
+) %>%
+  add_trace(
+    x = ~compliance_inspections,
+    y = fitted(lm(complaints ~ compliance_inspections, data = merged_data)),
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "purple"),
+    name = "Regression Line"
+  ) %>%
+  layout(
+    title = "Relationship Between Compliance Inspections and Complaints",
+    xaxis = list(title = "Compliance Inspections"),
+    yaxis = list(title = "Number of Complaints")
+  )
+```
+</details>
+
+```{r}
+scatter_compliance
+```
+
+<p><br>
+
 
 ### Adding Aditional Time Predictor
 
@@ -191,18 +244,34 @@ print(coefficients_time)
 
 The boxplot below shows that complaints are generally higher during Summer than Winter, with wider variability in the Summer. Food availability could be a potential reason for accounting this pattern. Although seasonal effect is not significant in this model, further investigation into weather and food availability for rodents may reveal actionable insights.
 
+<details>
+<summary>Click to view the detailed code</summary>
+```{r}
+library(plotly)
+
+plotly_boxplot <- plot_ly(
+  data = merged_data,
+  x = ~season,
+  y = ~complaints,
+  type = "box",
+  color = ~season,
+  colors = c("Winter" = "blue", "Summer" = "orange")
+) %>%
+  layout(
+    title = "Seasonal Effect on Complaints",
+    xaxis = list(title = "Season"),
+    yaxis = list(title = "Number of Complaints"),
+    showlegend = FALSE
+  )
+
+```
+
+</details>
 
 ```{r}
-# Visualize the effect of season on complaints
-ggplot(merged_data, aes(x = season, y = complaints, fill = season)) +
-  geom_boxplot() +
-  labs(
-    title = "Seasonal Effect on Complaints",
-    x = "Season",
-    y = "Number of Complaints"
-  ) +
-  theme_minimal()
+plotly_boxplot
 ```
+<p><br>
 
 ### Adding Interaction Term <code>exterminator_visits * season</code>
 
@@ -231,38 +300,66 @@ cat("Adjusted R-squared: ", adjusted_r_squared_interaction, "\n")
 coefficients_interaction <- broom::tidy(regression_model_interaction)
 print(coefficients_interaction)
 
+# Create a scatter plot with regression lines for each season
+interaction_plot <- plot_ly(
+  data = merged_data,
+  x = ~exterminator_visits,
+  y = ~complaints,
+  color = ~season,
+  type = "scatter",
+  mode = "markers",
+  marker = list(opacity = 0.6)
+) %>%
+  # Add regression lines for each season
+  add_trace(
+    data = merged_data %>% filter(season == "Winter"),
+    x = ~exterminator_visits,
+    y = fitted(lm(complaints ~ exterminator_visits, data = merged_data %>% filter(season == "Winter"))),
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "blue", dash = "solid"),
+    name = "Winter Regression"
+  ) %>%
+  add_trace(
+    data = merged_data %>% filter(season == "Summer"),
+    x = ~exterminator_visits,
+    y = fitted(lm(complaints ~ exterminator_visits, data = merged_data %>% filter(season == "Summer"))),
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "orange", dash = "solid"),
+    name = "Summer Regression"
+  ) %>%
+  layout(
+    title = "Interaction Between Exterminator Visits and Season",
+    xaxis = list(title = "Exterminator Visits"),
+    yaxis = list(title = "Number of Complaints"),
+    legend = list(title = list(text = "Season"))
+  )
+
+
 ```
 </details>
+``
 
 ```{r}
-# Visualize the interaction effect
-ggplot(merged_data, aes(x = exterminator_visits, y = complaints, color = season)) +
-  geom_point(alpha = 0.6) +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(
-    title = "Interaction Between Exterminator Visits and Season",
-    x = "Exterminator Visits",
-    y = "Number of Complaints",
-    color = "Season"
-  ) +
-  theme_minimal()
-```
+interaction_plot
 
-### Quantile Regression 
+```
+<p><br>
+
+### Quantile Regression
+
+By analyzing quantile regression for this project, we could have a deeper understanding of how exterminator visits and compliance inspections impact rodent complaints across neighborhoods with varying levels of infestations. Unlike traditional regression, which focuses on average effects, it allows us to analyze how these predictors influence areas with low, moderate, and high complaint volumes. The results will reveal whether exterminator visits have a disproportionately higher effect in neighborhoods with severe rodent issues (upper quantiles) compared to areas with minimal complaints (lower quantiles). This insight is essential for NYC’s efforts to combat rodent infestations, as it helps the Department of Sanitation and related agencies tailor their strategies to specific community needs.
 
 <details>
 <summary>Click to view the detailed code</summary>
 ```{r}
-
-# Load necessary library for quantile regression
 library(quantreg)
 
-# Perform quantile regression at different quantiles (e.g., 0.25, 0.5, 0.75)
 quantile_model_25 <- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.25, data = merged_data)
-quantile_model_50 <- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.50, data = merged_data) # Median regression
+quantile_model_50 <- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.50, data = merged_data) 
 quantile_model_75 <- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.75, data = merged_data)
 
-# Display summaries of the models
 cat("Quantile Regression for Tau = 0.25\n")
 print(summary(quantile_model_25))
 
@@ -282,24 +379,17 @@ print(quantile_coefficients)
 
 ```
 </details>
+<p><br>
 
-##### Effect of Exterminator Visits:
+#### Effect of Exterminator Visits:
 The relationship strengthens as complaints increase (from Tau = 0.25 to Tau = 0.75).
 At high quantiles (e.g., Tau = 0.75), exterminator visits are significantly associated with complaints. This suggests exterminator visits are primarily deployed reactively in high-complaint areas, rather than proactively preventing complaints.
 
-##### Effect of Compliance Inspections:
+#### Effect of Compliance Inspections:
 The negative relationship between compliance inspections and complaints becomes stronger at higher quantiles, potentially reflecting the efficacy of inspections in high-complaint areas. However, the effects are not statistically significant.
 
-##### Heterogeneity Across Quantiles:
+#### Heterogeneity Across Quantiles:
 The results show substantial differences in the effects of predictors across quantiles, emphasizing the importance of quantile regression in capturing these variations.
-
-### Recommendations
-  Target High-Complaint Areas:
-Given the strong relationship between exterminator visits and complaints at high quantiles, resources should focus on high-complaint areas to address rodent issues proactively.
-  
-  Enhance Inspection Effectiveness:
-Strengthen compliance inspection processes in areas with high complaints to validate the apparent (though not significant) reduction in complaints associated with inspections.
-
 
 ```{r}
 par(mar = c(3.9, 3.6, 4, 2) + 0.5)
@@ -317,5 +407,22 @@ title(
 
 
 ```
+<p><br>
+
+### Conclusion
+  The quantile regression analysis reveals important insights into how exterminator visits influence rodent complaints across different levels of complaints. The coefficients for exterminator visits increase as we move from lower quantiles (0.25) to higher quantiles (0.75), suggesting that exterminator visits have a stronger impact in areas with a higher volume of complaints. At the 0.25 quantile, the effect is minimal (0.037), while at the 0.75 quantile, the coefficient rises to 0.335. This indicates that neighborhoods with more severe rodent problems (upper quantiles of complaints) are more sensitive to the number of exterminator visits.
+
+  The confidence intervals, as shown in the shaded region of the plot, suggest that while the effect is statistically uncertain at lower quantiles, it becomes more pronounced and meaningful at higher quantiles. This pattern highlights the importance of targeting exterminator visits to areas experiencing higher rodent activity, where the intervention appears to have the most significant impact. This insight can help NYC optimize its pest control resources, ensuring that heavily impacted neighborhoods receive priority attention. By focusing on high-complaint regions, the city can better address rodent infestations and improve the effectiveness of its rodent management strategies.
+
+## Recommendations
+
+* Target High-Complaint Areas:
+Given the strong relationship between exterminator visits and complaints at high quantiles, resources should focus on high-complaint areas to address rodent issues proactively.
+  
+* Enhance Inspection Effectiveness:
+Strengthen compliance inspection processes in areas with high complaints to validate the apparent (though not significant) reduction in complaints associated with inspections.
+
+
+
 
 

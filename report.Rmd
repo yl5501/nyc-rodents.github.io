@@ -10,25 +10,35 @@ output:
   Imagine walking through your favorite park in NYC and unexpectedly encountering a rat scurrying by. This scenario not only disrupts the enjoyment of the space but also raises questions about the city's sanitation and pest control measures. These moments emphasize the importance of effective rodent management for a cleaner, safer, and more pleasant urban environment.
 
   By delving into complaint patterns and intervention strategies, this project seeks to make NYC a cleaner, more welcoming city where residents and visitors no longer live in fear of sudden encounters with rodents. This effort supports the broader vision of enhancing urban life and reinforcing NYC's status as a leading global metropolis.
-
+<p><br>
 
 ## Related Work
-According to [NYC Health](https://www.nyc.gov/site/doh/health/health-topics/rats.page), rats pose challenges for residents, property owners, businesses, and entire communities. Their gnawing and burrowing can lead to structural damage, while their presence contaminates food, spreads disease, and diminishes overall quality of life.
+  According to [NYC Health](https://www.nyc.gov/site/doh/health/health-topics/rats.page), rats pose challenges for residents, property owners, businesses, and entire communities. Their gnawing and burrowing can lead to structural damage, while their presence contaminates food, spreads disease, and diminishes overall quality of life.
+
+  [CDC](https://www.cdc.gov/healthy-pets/rodent-control/index.html) also mentions that rodent droppings, urine, and saliva can contaminate the air or food, spreading diseases when inhaled or consumed. Additionally, rodents often carry parasites like ticks, mites, or fleas that can transmit illnesses. Many of these diseases do not cause visible symptoms in rodents, making it impossible to determine if a rodent is infected simply by its appearance.
+
+<p><br>
 
 ## Initial Questions
 * What are the temporal and spatial trends in rodent complaints?
 * How effective are extermination and inspection efforts in reducing complaints over time?
 * What insights can be derived from different complaint, inspection, and extermination outcomes?
+* How do predictors differ in their effects across areas with varying complaint severity?
+
+<p><br>
 
 ## Data
 * Source: The data being used for this project is downloaded from [NYC Open data](https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data).
-* Scraping Method: publicly available downlaods
+* Scraping Method: publicly available downloads
 * Cleaning: 
   - Standardizing column names.
   - Converting the date column to a standard Date format.
   - Removing duplicates.
   - Dropping rows with missing values.
-  
+
+
+<details>
+<summary>Click to view the detailed code</summary>
 ```{r}
 library(dplyr)
 library(lubridate)
@@ -70,93 +80,38 @@ write.csv(inspections_clean, "cleaned_compliance_inspections.csv", row.names = F
 write.csv(exterminator_clean, "cleaned_exterminator_visits.csv", row.names = FALSE)
 write.csv(initial_inspections_clean, "cleaned_initial_inspections.csv", row.names = FALSE)
 
+```
+</details>
+<p><br>
+
+### Overview of Datasets
+#### 311 Rodent Complaints:
+This dataset contains reports of rodent complaints made through NYC's 311 system. It includes information such as the location, date, and type of complaint, serving as the foundation for understanding temporal and spatial trends in rodent activity across the city.
+
+#### Exterminator Visits:
+Records of exterminator visits by city agencies to address rodent infestations. This dataset allows us to evaluate the impact of extermination efforts on complaint levels and assess how these interventions vary across neighborhoods.
+
+#### Compliance Inspections:
+Details of inspections conducted to ensure compliance with rodent prevention and control measures. These data help us analyze whether proactive measures, such as compliance enforcement, contribute to reducing rodent complaints.
+
+#### Initial Inspections:
+Data on initial inspections carried out to identify rodent issues and assess the need for intervention. This dataset supports the analysis of preemptive efforts and their correlation with subsequent complaints.
+
+
+```{r}
 summary(complaints_clean)
 summary(inspections_clean)
 summary(exterminator_clean)
 summary(initial_inspections_clean)
-
 ```
 
+<p><br>
 
+## Discussion 
+The temporal and spatial trends in the 311 complaints dataset revealed that rodent activity is not evenly distributed across neighborhoods or seasons, with certain regions such as Harlem and the Bronx reporting higher complaints. These findings highlight the need for targeted pest control efforts in high-complaint areas.
 
-```{r}
-# Load necessary libraries
-library(dplyr)
-library(ggplot2)
-library(lubridate)
+The linear regression analysis showed that exterminator visits have a significant positive association with rodent complaints, indicating that areas with more extermination efforts tend to experience higher complaint levels. This suggests that exterminator visits are likely concentrated in neighborhoods with severe infestations, reflecting a reactive approach to rodent control. Compliance inspections, on the other hand, showed a weak and statistically insignificant negative association with complaints, addressing the need for further investigation into how compliance measures can be more effectively implemented.
 
-# Load cleaned data (replace file paths with the cleaned dataset)
-complaints_clean <- read.csv("cleaned_311_complaints.csv")
+The introduction of interaction term between exterminator visits and season demonstrated that the impact of exterminator visits is relatively consistent across seasons, but subtle differences highlight the importance of understanding seasonal factors in resource allocation. The quantile regression analysis provided additional depth by showing that the effect of exterminator visits is stronger at higher quantiles of complaints, indicating that these interventions are more impactful in areas with severe rodent problems. This underscores the importance of prioritizing resources in neighborhoods with the most significant infestations.
 
-# Convert `date` to Date type
-complaints_clean <- complaints_clean %>%
-  mutate(date = as.Date(date))
-
-# Extract temporal features (Year and Month)
-complaints_clean <- complaints_clean %>%
-  mutate(
-    year = year(date),
-    month = month(date, label = TRUE)
-  )
-
-# 1. Temporal Trends: Rodent Complaints Over Time
-temporal_trend <- complaints_clean %>%
-  group_by(year, month) %>%
-  summarise(total_complaints = sum(count, na.rm = TRUE)) %>%
-  arrange(year, month)
-
-# Plot temporal trends
-ggplot(temporal_trend, aes(x = interaction(year, month, sep = "-"), y = total_complaints, group = year)) +
-  geom_line(color = "blue", size = 1) +
-  labs(
-    title = "Temporal Trends in Rodent Complaints",
-    x = "Year-Month",
-    y = "Total Complaints"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-# 2. Spatial Trends: Rodent Complaints by Region
-spatial_trend <- complaints_clean %>%
-  group_by(region) %>%
-  summarise(total_complaints = sum(count, na.rm = TRUE)) %>%
-  arrange(desc(total_complaints))
-
-# Plot spatial trends
-ggplot(spatial_trend, aes(x = reorder(region, total_complaints), y = total_complaints, fill = region)) +
-  geom_bar(stat = "identity") +
-  coord_flip() +
-  labs(
-    title = "Spatial Trends in Rodent Complaints by Region",
-    x = "Region",
-    y = "Total Complaints"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-# 3. Temporal Trends by Region
-temporal_spatial_trend <- complaints_clean %>%
-  group_by(region, year, month) %>%
-  summarise(total_complaints = sum(count, na.rm = TRUE)) %>%
-  arrange(region, year, month)
-
-# Plot temporal trends for top 5 regions
-top_regions <- spatial_trend %>%
-  top_n(5, total_complaints) %>%
-  pull(region)
-
-temporal_spatial_filtered <- temporal_spatial_trend %>%
-  filter(region %in% top_regions)
-
-ggplot(temporal_spatial_filtered, aes(x = interaction(year, month, sep = "-"), y = total_complaints, color = region, group = region)) +
-  geom_line(size = 1) +
-  labs(
-    title = "Temporal Trends in Rodent Complaints for Top Regions",
-    x = "Year-Month",
-    y = "Total Complaints"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-```
 
