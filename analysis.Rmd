@@ -10,8 +10,7 @@ output:
 
 ### 1. Temporal Trends
 
-By visualizing the trend of rodent complaints over time, we can see that there was a slight decline in complaints between June 2022 and December 2022. However, complaints increased significantly in June 2023 and continued to rise through December 2023.
-
+By visualizing the trend of rodent complaints over time, we can see that there was a slight decline in complaints between June 2022 and December 2022. However, complaints increased significantly in June 2023 and continued to rise through December 2023. Seasonal factors may play a role, as rodent activity tends to increase during warmer months when food and shelter are more accessible.
 
 <details>
 <summary>Click to view the detailed code</summary>
@@ -60,7 +59,11 @@ ggplot(temporal_trend, aes(x = interaction(year, month, sep = "-"), y = total_co
 
 ### 2. Spatial Trends
 
-Visualize the distribution of rodent complaints across different regions.
+  The bar chart below displays the total number of complaints for each region during the analyzed period.
+Harlem reported the highest number of complaints, significantly outpacing other regions.Brooklyn: Bed Stuy and Bushwick followed as the second-most affected area, while Bronx: Grand Concourse and Manhattan: East Village and Chinatown had comparatively lower complaint numbers. 
+  Differences in population density, housing conditions, or sanitation infrastructure could explain these regional disparities. Harlem's high number of complaints might be due to a combination of older infrastructure and higher residential density.
+  Targeted interventions should prioritize Harlem and Bed Stuy/Bushwick. Outreach campaigns and enhanced sanitation efforts in these neighborhoods could significantly reduce complaint volumes.
+
 
 <details>
 <summary>Click to view the detailed code</summary>
@@ -89,8 +92,12 @@ ggplot(spatial_trend, aes(x = reorder(region, total_complaints), y = total_compl
 ```
 
 ### 3. Temporal Trends by Region
-Analyze complaint trends over time for the regions with the highest complaints.
-
+  The line chart below tracks complaint trends over time for the top regions with the highest complaint counts.
+  Manhattan: Harlem consistently had the highest number of complaints, with a steady increase from June 2022 to December 2023.
+  Brooklyn: Bed Stuy and Bushwick showed a slight decline over the same period, indicating possible effectiveness of recent interventions.
+  Bronx: Grand Concourse and Manhattan: East Village and Chinatown experienced minor fluctuations without significant trends.
+  Harlem's rising complaints may indicate a persistent rodent issue that hasn't been fully addressed, while the slight decline in Brooklyn complaints could reflect improvements in sanitation or extermination efforts. The improvement of Brooklyn could serve as a model for replication in other regions.
+  
 <details>
 <summary>Click to view the detailed code</summary>
 ```{r}
