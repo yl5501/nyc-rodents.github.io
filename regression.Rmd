@@ -90,15 +90,17 @@ cat("R-squared: ", r_squared, "\n")
 cat("Adjusted R-squared: ", adjusted_r_squared, "\n")
 ```
 
-## Analysis
+## Coefficient Analysis (from <code>broom::tidy()</code>)
   For every <strong>additional exterminator</strong> visit, complaints are expected to increase by approximately 0.258, when inspections remain constant.
   The p-value is 0.0263, meaning that it is significant at the 5% level of significance.
   This positive relationship suggests that exterminator visits are associated with more complaints, indicating a reactive response, where exterminator visits are higher in areas with more complaints.
 
-
+  For every additional compliance inspection, complaints are expected to decrease by approximately 0.084, when exterminator visits remain constant.
+  The p-value is 0.299, indicating it is not statistically significant at the 5% level of significance.
+  The negative estimate suggests a potential reduction in complaints with more inspections, but the lack of statistical significance means this effect cannot be reliably inferred from the data.
+  
+### Visualize Regression Relationships
 ```{r}
-# Visualize Regression Relationships
-
 # Scatter plot with regression line for exterminator visits
 ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
   geom_point(alpha = 0.6, color = "blue") +

@@ -477,8 +477,8 @@ cat(&quot;R-squared: &quot;, r_squared, &quot;\n&quot;)</code></pre>
 <pre><code>## Adjusted R-squared:  0.313029</code></pre>
 </div>
 </div>
-<div id="analysis" class="section level2">
-<h2>Analysis</h2>
+<div id="coefficient-analysis-from-broomtidy" class="section level2">
+<h2>Coefficient Analysis (from <code>broom::tidy()</code>)</h2>
 <p>For every <strong>additional exterminator</strong> visit, complaints
 are expected to increase by approximately 0.258, when inspections remain
 constant. The p-value is 0.0263, meaning that it is significant at the
@@ -486,9 +486,16 @@ constant. The p-value is 0.0263, meaning that it is significant at the
 exterminator visits are associated with more complaints, indicating a
 reactive response, where exterminator visits are higher in areas with
 more complaints.</p>
-<pre class="r"><code># Visualize Regression Relationships
-
-# Scatter plot with regression line for exterminator visits
+<p>For every additional compliance inspection, complaints are expected
+to decrease by approximately 0.084, when exterminator visits remain
+constant. The p-value is 0.299, indicating it is not statistically
+significant at the 5% level of significance. The negative estimate
+suggests a potential reduction in complaints with more inspections, but
+the lack of statistical significance means this effect cannot be
+reliably inferred from the data.</p>
+<div id="visualize-regression-relationships" class="section level3">
+<h3>Visualize Regression Relationships</h3>
+<pre class="r"><code># Scatter plot with regression line for exterminator visits
 ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
   geom_point(alpha = 0.6, color = &quot;blue&quot;) +
   geom_smooth(method = &quot;lm&quot;, color = &quot;red&quot;, se = TRUE) +
@@ -512,6 +519,7 @@ ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
   theme_minimal()</code></pre>
 <pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
 <p><img src="regression_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+</div>
 </div>
 
 
