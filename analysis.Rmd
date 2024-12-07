@@ -1,0 +1,127 @@
+---
+title: "Exploratory Analysis"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+## Temporal and Spatial Trends in Rodent Complaints
+
+### 1. Temporal Trends
+
+By visualizing the trend of rodent complaints over time, we can see that there was a slight decline in complaints between June 2022 and December 2022. However, complaints increased significantly in June 2023 and continued to rise through December 2023.
+
+
+<details>
+<summary>Click to view the detailed code</summary>
+
+```{r temporal-trends, echo=TRUE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+# Load cleaned data
+complaints_clean <- read.csv("cleaned_311_complaints.csv")
+
+# Convert `date` to Date type
+complaints_clean <- complaints_clean %>%
+  mutate(date = as.Date(date))
+
+# Extract temporal features (Year and Month)
+complaints_clean <- complaints_clean %>%
+  mutate(
+    year = year(date),
+    month = month(date, label = TRUE)
+  )
+
+# Temporal Trends Analysis
+temporal_trend <- complaints_clean %>%
+  group_by(year, month) %>%
+  summarise(total_complaints = sum(count, na.rm = TRUE)) %>%
+  arrange(year, month)
+```
+</details>
+
+
+```{r}
+# Plot temporal trends
+ggplot(temporal_trend, aes(x = interaction(year, month, sep = "-"), y = total_complaints, group = year)) +
+  geom_line(color = "blue", linewidth = 1) +
+  labs(
+    title = "Temporal Trends in Rodent Complaints",
+    x = "Year-Month",
+    y = "Total Complaints"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+### 2. Spatial Trends
+
+Visualize the distribution of rodent complaints across different regions.
+
+<details>
+<summary>Click to view the detailed code</summary>
+
+```{r}
+# Spatial Trends Analysis
+spatial_trend <- complaints_clean %>%
+  group_by(region) %>%
+  summarise(total_complaints = sum(count, na.rm = TRUE)) %>%
+  arrange(desc(total_complaints))
+```
+</details>
+
+```{r}
+# Plot spatial trends
+ggplot(spatial_trend, aes(x = reorder(region, total_complaints), y = total_complaints, fill = region)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(
+    title = "Spatial Trends in Rodent Complaints by Region",
+    x = "Region",
+    y = "Total Complaints"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+### 3. Temporal Trends by Region
+Analyze complaint trends over time for the regions with the highest complaints.
+
+<details>
+<summary>Click to view the detailed code</summary>
+```{r}
+# Temporal Trends by Region
+temporal_spatial_trend <- complaints_clean %>%
+  group_by(region, year, month) %>%
+  summarise(total_complaints = sum(count, na.rm = TRUE), .groups = "drop") %>%
+  arrange(region, year, month)
+
+# Filter for top regions
+top_regions <- spatial_trend %>%
+  top_n(5, total_complaints) %>%
+  pull(region)
+
+temporal_spatial_filtered <- temporal_spatial_trend %>%
+  filter(region %in% top_regions)
+```
+</details>
+
+```{r}
+# Plot temporal trends for top regions
+ggplot(temporal_spatial_filtered, aes(x = interaction(year, month, sep = "-"), y = total_complaints, color = region, group = region)) +
+  geom_line(linewidth = 1) +
+  labs(
+    title = "Temporal Trends in Rodent Complaints for Top Regions",
+    x = "Year-Month",
+    y = "Total Complaints"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+
