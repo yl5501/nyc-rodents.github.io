@@ -1,39 +1,14 @@
 ---
-title: "About me"
+title: "About"
 output: 
   html_document:
     toc: true
     toc_float: true
 ---
 
-# This page has my academic and professional experience 
+# About this project
 
-EDUCATION
-Columbia University Mailman School of Public Health, New York, NY                             Aug 2023 – Present
-Master of Public Health in Epidemiology                                                                               
-Certificate: Applied Biostatistics and Public Health Data Science 
-Relevant Coursework: Analysis of Categorical Data, Applied Regression, Design and Conduct of Observational Epidemiological Studies, Determinants of Public Health, Foundations of Public Health, Global & Developmental Perspectives, Health Systems, Research Methods & Application, Public Health Interventions.
+The data being used for this project is downloaded from [NYC Open data](https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data)
 
-Brandeis University, Waltham, MA                                                              Aug 2018 – May 2022
-Bachelor of Science in Biology, Minor in Architectural Studies 
-Honors: School of Arts and Sciences Dean’s List                                          	  
-Relevant Coursework: Approaches to Architecture & the City, Architectural Drawing & Design, Biology of Climate Change, Calculus, Cells and Organisms, Data Analysis and Statistics Workshop, Genetics, General Chemistry, Introduction to 3D Animation, Organic Chemistry, Physiology, Plant Biology, Statistics.
 
-PROFESSIONAL EXPERIENCE
-Columbia University Irving Medical Center, New York, NY	June 2024 – Present
-Student Researcher	
-•	Analyzed and visualized dataset on chemokines and cytokines for childhood infection and pubertal timing. 
-•	Screened most updated studies and worked on the development of a grant and publication for the systematic review for postpartum breast cancer. 
-
-Hopewell Therapeutics Inc., Woburn, MA	May 2022 – May 2023
-Research Associate	
-•	Cultured tissue every other day and isolated human peripheral blood mononuclear cells from healthy donors
-•	Processed the blood samples from mice to get the serum
-•	Performed Enzyme-linked immunosorbent assay (ELISA)
-•	Analyzed and visualized data using GraphPad Prism	
-
-Architecture, Engineering, Construction, Operations, and Management (AECOM)	Nov 2021 - Feb 2022
-Project Associate, remote	
-•	Designed floorplan for the community center renew project
-•	Prepared slides for presentation
 
