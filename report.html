@@ -406,22 +406,10 @@ Open data</a>.</li>
 <li>Dropping rows with missing values.</li>
 </ul></li>
 </ul>
-<pre class="r"><code>library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(lubridate)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;lubridate&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     date, intersect, setdiff, union</code></pre>
-<pre class="r"><code>clean_data &lt;- function(data) {
+<pre class="r"><code>library(dplyr)
+library(lubridate)
+
+clean_data &lt;- function(data) {
   colnames(data) &lt;- tolower(colnames(data))
   
   data &lt;- data %&gt;% 
@@ -542,8 +530,8 @@ temporal_trend &lt;- complaints_clean %&gt;%
   group_by(year, month) %&gt;%
   summarise(total_complaints = sum(count, na.rm = TRUE)) %&gt;%
   arrange(year, month)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;year&#39;. You can override using the
-## `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;year&#39;. You can override
+## using the `.groups` argument.</code></pre>
 <pre class="r"><code># Plot temporal trends
 ggplot(temporal_trend, aes(x = interaction(year, month, sep = &quot;-&quot;), y = total_complaints, group = year)) +
   geom_line(color = &quot;blue&quot;, size = 1) +
@@ -554,11 +542,12 @@ ggplot(temporal_trend, aes(x = interaction(year, month, sep = &quot;-&quot;), y 
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
-<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2
+## 3.4.0.
 ## ℹ Please use `linewidth` instead.
 ## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.</code></pre>
+## Call `lifecycle::last_lifecycle_warnings()` to see where this
+## warning was generated.</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <pre class="r"><code># 2. Spatial Trends: Rodent Complaints by Region
 spatial_trend &lt;- complaints_clean %&gt;%
@@ -583,8 +572,8 @@ temporal_spatial_trend &lt;- complaints_clean %&gt;%
   group_by(region, year, month) %&gt;%
   summarise(total_complaints = sum(count, na.rm = TRUE)) %&gt;%
   arrange(region, year, month)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;region&#39;, &#39;year&#39;. You can override using
-## the `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;region&#39;, &#39;year&#39;. You can
+## override using the `.groups` argument.</code></pre>
 <pre class="r"><code># Plot temporal trends for top 5 regions
 top_regions &lt;- spatial_trend %&gt;%
   top_n(5, total_complaints) %&gt;%
