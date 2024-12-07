@@ -72,10 +72,15 @@ regression_model <- lm(complaints ~ exterminator_visits + compliance_inspections
 model_summary <- summary(regression_model)
 print(model_summary)
 
+```
+</details>
+
+```{r}
 # Extract Regression Coefficients
 coefficients <- broom::tidy(regression_model)
 print(coefficients)
-
+```
+```{r}
 # Evaluate Model Fit: Extract R-squared and Adjusted R-squared
 r_squared <- model_summary$r.squared
 adjusted_r_squared <- model_summary$adj.r.squared
@@ -83,9 +88,13 @@ adjusted_r_squared <- model_summary$adj.r.squared
 # Print R-squared and Adjusted R-squared
 cat("R-squared: ", r_squared, "\n")
 cat("Adjusted R-squared: ", adjusted_r_squared, "\n")
-
 ```
-</details>
+
+## Analysis
+  For every <strong>additional exterminator</strong> visit, complaints are expected to increase by approximately 0.258, when inspections remain constant.
+  The p-value is 0.0263, meaning that it is significant at the 5% level of significance.
+  This positive relationship suggests that exterminator visits are associated with more complaints, indicating a reactive response, where exterminator visits are higher in areas with more complaints.
+
 
 ```{r}
 # Visualize Regression Relationships
@@ -113,19 +122,4 @@ ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
   theme_minimal()
 ```
 
-```{r}
-# Fit the regression model
-regression_model <- lm(complaints ~ exterminator_visits + compliance_inspections, data = merged_data)
-
-# Display the full model summary
-model_summary <- summary(regression_model)
-
-# Extract R-squared and Adjusted R-squared
-r_squared <- model_summary$r.squared
-adjusted_r_squared <- model_summary$adj.r.squared
-
-# Print the values
-cat("R-squared: ", r_squared, "\n")
-cat("Adjusted R-squared: ", adjusted_r_squared, "\n")
-```
 

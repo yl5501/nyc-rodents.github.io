@@ -456,6 +456,7 @@ print(model_summary)</code></pre>
 ## Residual standard error: 536.3 on 13 degrees of freedom
 ## Multiple R-squared:  0.4046, Adjusted R-squared:  0.313 
 ## F-statistic: 4.417 on 2 and 13 DF,  p-value: 0.03437</code></pre>
+</details>
 <pre class="r"><code># Extract Regression Coefficients
 coefficients &lt;- broom::tidy(regression_model)
 print(coefficients)</code></pre>
@@ -474,7 +475,17 @@ cat(&quot;R-squared: &quot;, r_squared, &quot;\n&quot;)</code></pre>
 <pre><code>## R-squared:  0.4046251</code></pre>
 <pre class="r"><code>cat(&quot;Adjusted R-squared: &quot;, adjusted_r_squared, &quot;\n&quot;)</code></pre>
 <pre><code>## Adjusted R-squared:  0.313029</code></pre>
-</details>
+</div>
+</div>
+<div id="analysis" class="section level2">
+<h2>Analysis</h2>
+<p>For every <strong>additional exterminator</strong> visit, complaints
+are expected to increase by approximately 0.258, when inspections remain
+constant. The p-value is 0.0263, meaning that it is significant at the
+5% level of significance. This positive relationship suggests that
+exterminator visits are associated with more complaints, indicating a
+reactive response, where exterminator visits are higher in areas with
+more complaints.</p>
 <pre class="r"><code># Visualize Regression Relationships
 
 # Scatter plot with regression line for exterminator visits
@@ -488,7 +499,7 @@ ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
   ) +
   theme_minimal()</code></pre>
 <pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="regression_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code># Scatter plot with regression line for compliance inspections
 ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
   geom_point(alpha = 0.6, color = &quot;green&quot;) +
@@ -500,23 +511,7 @@ ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
   ) +
   theme_minimal()</code></pre>
 <pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
-<pre class="r"><code># Fit the regression model
-regression_model &lt;- lm(complaints ~ exterminator_visits + compliance_inspections, data = merged_data)
-
-# Display the full model summary
-model_summary &lt;- summary(regression_model)
-
-# Extract R-squared and Adjusted R-squared
-r_squared &lt;- model_summary$r.squared
-adjusted_r_squared &lt;- model_summary$adj.r.squared
-
-# Print the values
-cat(&quot;R-squared: &quot;, r_squared, &quot;\n&quot;)</code></pre>
-<pre><code>## R-squared:  0.4046251</code></pre>
-<pre class="r"><code>cat(&quot;Adjusted R-squared: &quot;, adjusted_r_squared, &quot;\n&quot;)</code></pre>
-<pre><code>## Adjusted R-squared:  0.313029</code></pre>
-</div>
+<p><img src="regression_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
 </div>
 
 
