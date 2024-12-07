@@ -6,18 +6,18 @@ output:
     toc_float: true
 ---
 
-## 
-
 ### Defining variables
-Dependent Variable (Y): Number of complaints (count from the 311 complaints dataset).
+Dependent Variable (Y): 
+Number of complaints (count from the 311 complaints dataset).
 Independent Variables (X):
 Exterminator visits (count from the exterminator visits dataset).
 Compliance inspections (count from the compliance inspections dataset).
 
 Steps:
-Merge the datasets based on <code>date</code> and <code>zone_id</code>.
-Run a linear regression model to assess how independent variables influence complaints.
-Evaluate the model.
+
+* Merge the datasets based on <code>date</code> and <code>zone_id</code>.
+* Run a linear regression model to assess how independent variables influence complaints.
+* Evaluate the model.
 
 <details>
 <summary>Click to view the detailed code</summary>
@@ -25,34 +25,27 @@ Evaluate the model.
 ```{r}
 library(dplyr)
 library(ggplot2)
-library(broom)  # For model summary
+library(broom)
 
-# Load cleaned datasets
 complaints_data <- read.csv("cleaned_311_complaints.csv")
 exterminator_data <- read.csv("cleaned_exterminator_visits.csv")
 inspections_data <- read.csv("cleaned_compliance_inspections.csv")
 
-# Aggregate complaints data
 complaints_data <- complaints_data %>%
   group_by(date, zone_id, region) %>%
   summarise(complaints = sum(count, na.rm = TRUE), .groups = "drop")
 
-# Aggregate exterminator visits data
 exterminator_data <- exterminator_data %>%
   group_by(date, zone_id, region) %>%
   summarise(exterminator_visits = sum(count, na.rm = TRUE), .groups = "drop")
 
-# Aggregate compliance inspections data
 inspections_data <- inspections_data %>%
   group_by(date, zone_id, region) %>%
   summarise(compliance_inspections = sum(count, na.rm = TRUE), .groups = "drop")
 
-# Merge datasets by date, zone_id, and region
 merged_data <- complaints_data %>%
   inner_join(exterminator_data, by = c("date", "zone_id", "region")) %>%
   inner_join(inspections_data, by = c("date", "zone_id", "region"))
-
-
 
 ```
 </details>
@@ -74,23 +67,9 @@ print(model_summary)
 
 ```
 </details>
+<p><br>
 
-```{r}
-# Extract Regression Coefficients
-coefficients <- broom::tidy(regression_model)
-print(coefficients)
-```
-```{r}
-# Evaluate Model Fit: Extract R-squared and Adjusted R-squared
-r_squared <- model_summary$r.squared
-adjusted_r_squared <- model_summary$adj.r.squared
-
-# Print R-squared and Adjusted R-squared
-cat("R-squared: ", r_squared, "\n")
-cat("Adjusted R-squared: ", adjusted_r_squared, "\n")
-```
-
-## Coefficient Analysis (from <code>broom::tidy()</code>)
+### Coefficient Analysis (from <code>broom::tidy()</code>)
   For every <strong>additional exterminator</strong> visit, complaints are expected to increase by approximately 0.258, when inspections remain constant.
   The p-value is 0.0263, meaning that it is significant at the 5% level of significance.
   This positive relationship suggests that exterminator visits are associated with more complaints, indicating a reactive response, where exterminator visits are higher in areas with more complaints.
@@ -98,8 +77,37 @@ cat("Adjusted R-squared: ", adjusted_r_squared, "\n")
   For every additional compliance inspection, complaints are expected to decrease by approximately 0.084, when exterminator visits remain constant.
   The p-value is 0.299, indicating it is not statistically significant at the 5% level of significance.
   The negative estimate suggests a potential reduction in complaints with more inspections, but the lack of statistical significance means this effect cannot be reliably inferred from the data.
-  
+
+<details>
+<summary>Click to view the detailed code</summary>
+
+```{r}
+# Extract Regression Coefficients
+coefficients <- broom::tidy(regression_model)
+print(coefficients)
+```
+</details>
+<p><br>
+
+### Model Fit (from <code>summary()</code>)
+<p>* R_squared: 0.4046<br>
+Approximately 40.46% of the variability in complaints is explained by the model. This is a moderate fit but leaves 59.54% of the variability unexplained, suggesting other factors may contribute to complaints.
+
+<p>* Adjusted R-squared: 0.3130<br>
+After accounting for the number of predictors, the model explains 31.3% of the variability in complaints. The relatively lower value of adjusted R-squared indicates that some variance may be attributed to noise or irrelevant predictors.
+
 ### Visualize Regression Relationships
+
+##### Exterminator Visits vs. Complaints:
+* The scatter plot shows a positive trend with a significant regression line (p < 0.05).
+* The shaded confidence interval highlights variability in the predictions, with more uncertainty at higher numbers of visits.
+
+##### Compliance Inspections vs. Complaints:
+* The plot shows a slight negative trend, but the regression line is not statistically significant (p > 0.05).
+* The confidence interval is relatively wide, reflecting the weak relationship.
+
+
+
 ```{r}
 # Scatter plot with regression line for exterminator visits
 ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
@@ -122,6 +130,192 @@ ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
     y = "Number of Complaints"
   ) +
   theme_minimal()
+```
+
+### Adding Aditional Time Predictor
+
+##### Exterminator Visits:
+* Estimate: 0.25798, p-value = 0.0329 </p>
+* Statistically significant at the 5% level.
+* A positive coefficient indicates that for every additional exterminator visit, complaints are expected to increase by approximately 0.258, when all other variables remain constant.
+
+##### Compliance Inspections:
+* Estimate: -0.08301, p-value = 0.3259
+* Not statistically significant.
+* A negative coefficient indicates a potential decrease in complaints with more inspections, but the evidence is not strong enough to draw reliable conclusions.
+
+##### Month:
+* Estimate: -5.66314, p-value = 0.9068
+* Not statistically significant.
+* This suggests that complaints do not show a strong linear trend across months. 
+
+<details>
+<summary>Click to view the detailed code</summary>
+```{r}
+# Extract month as a numeric value and categorize into seasons
+merged_data <- merged_data %>%
+  mutate(
+    month = format(as.Date(date), "%m"),  
+    season = case_when(                  
+      month %in% c("12", "01", "02") ~ "Winter",
+      month %in% c("03", "04", "05") ~ "Spring",
+      month %in% c("06", "07", "08") ~ "Summer",
+      month %in% c("09", "10", "11") ~ "Fall"
+    ),
+    month = as.numeric(month)            # Convert month to numeric for regression
+  )
+
+# Convert season to a factor for regression analysis
+merged_data <- merged_data %>%
+  mutate(season = factor(season, levels = c("Winter", "Spring", "Summer", "Fall")))
+
+# Run the updated regression model: Complaints ~ Exterminator Visits + Compliance Inspections + Time Predictors
+regression_model_time <- lm(complaints ~ exterminator_visits + compliance_inspections + month + season, data = merged_data)
+
+model_summary_time <- summary(regression_model_time)
+print(model_summary_time)
+
+# Extract and print R-squared and Adjusted R-squared
+r_squared_time <- model_summary_time$r.squared
+adjusted_r_squared_time <- model_summary_time$adj.r.squared
+cat("R-squared: ", r_squared_time, "\n")
+cat("Adjusted R-squared: ", adjusted_r_squared_time, "\n")
+
+# Extract regression coefficients
+coefficients_time <- broom::tidy(regression_model_time)
+print(coefficients_time)
+
+```
+</details>
+<p><br>
+
+The boxplot below shows that complaints are generally higher during Summer than Winter, with wider variability in the Summer. Food availability could be a potential reason for accounting this pattern. Although seasonal effect is not significant in this model, further investigation into weather and food availability for rodents may reveal actionable insights.
+
+
+```{r}
+# Visualize the effect of season on complaints
+ggplot(merged_data, aes(x = season, y = complaints, fill = season)) +
+  geom_boxplot() +
+  labs(
+    title = "Seasonal Effect on Complaints",
+    x = "Season",
+    y = "Number of Complaints"
+  ) +
+  theme_minimal()
+```
+
+### Adding Interaction Term <code>exterminator_visits * season</code>
+
+The interaction term is not significant, indicating that the relationship between exterminator visits and complaints does not vary meaningfully between Winter and Summer.
+
+<details>
+<summary>Click to view the detailed code</summary>
+```{r}
+# Update the regression model to include the interaction term
+regression_model_interaction <- lm(
+  complaints ~ exterminator_visits * season + compliance_inspections + month,
+  data = merged_data
+)
+
+# Display the updated model summary
+model_summary_interaction <- summary(regression_model_interaction)
+print(model_summary_interaction)
+
+# Extract and print R-squared and Adjusted R-squared
+r_squared_interaction <- model_summary_interaction$r.squared
+adjusted_r_squared_interaction <- model_summary_interaction$adj.r.squared
+cat("R-squared: ", r_squared_interaction, "\n")
+cat("Adjusted R-squared: ", adjusted_r_squared_interaction, "\n")
+
+# Extract regression coefficients
+coefficients_interaction <- broom::tidy(regression_model_interaction)
+print(coefficients_interaction)
+
+```
+</details>
+
+```{r}
+# Visualize the interaction effect
+ggplot(merged_data, aes(x = exterminator_visits, y = complaints, color = season)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Interaction Between Exterminator Visits and Season",
+    x = "Exterminator Visits",
+    y = "Number of Complaints",
+    color = "Season"
+  ) +
+  theme_minimal()
+```
+
+### Quantile Regression 
+
+<details>
+<summary>Click to view the detailed code</summary>
+```{r}
+
+# Load necessary library for quantile regression
+library(quantreg)
+
+# Perform quantile regression at different quantiles (e.g., 0.25, 0.5, 0.75)
+quantile_model_25 <- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.25, data = merged_data)
+quantile_model_50 <- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.50, data = merged_data) # Median regression
+quantile_model_75 <- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.75, data = merged_data)
+
+# Display summaries of the models
+cat("Quantile Regression for Tau = 0.25\n")
+print(summary(quantile_model_25))
+
+cat("\nQuantile Regression for Tau = 0.50 (Median)\n")
+print(summary(quantile_model_50))
+
+cat("\nQuantile Regression for Tau = 0.75\n")
+print(summary(quantile_model_75))
+
+# Visualize quantile regression results
+taus <- c(0.25, 0.5, 0.75)  # Quantiles to analyze
+quantile_results <- rq(complaints ~ exterminator_visits + compliance_inspections, tau = taus, data = merged_data)
+
+# Coefficients across quantiles
+quantile_coefficients <- coef(quantile_results)
+print(quantile_coefficients)
+
+```
+</details>
+
+##### Effect of Exterminator Visits:
+The relationship strengthens as complaints increase (from Tau = 0.25 to Tau = 0.75).
+At high quantiles (e.g., Tau = 0.75), exterminator visits are significantly associated with complaints. This suggests exterminator visits are primarily deployed reactively in high-complaint areas, rather than proactively preventing complaints.
+
+##### Effect of Compliance Inspections:
+The negative relationship between compliance inspections and complaints becomes stronger at higher quantiles, potentially reflecting the efficacy of inspections in high-complaint areas. However, the effects are not statistically significant.
+
+##### Heterogeneity Across Quantiles:
+The results show substantial differences in the effects of predictors across quantiles, emphasizing the importance of quantile regression in capturing these variations.
+
+### Recommendations
+  Target High-Complaint Areas:
+Given the strong relationship between exterminator visits and complaints at high quantiles, resources should focus on high-complaint areas to address rodent issues proactively.
+  
+  Enhance Inspection Effectiveness:
+Strengthen compliance inspection processes in areas with high complaints to validate the apparent (though not significant) reduction in complaints associated with inspections.
+
+
+```{r}
+par(mar = c(3.9, 3.6, 4, 2) + 0.5)
+
+plot(
+  summary(quantile_results),
+  parm = "exterminator_visits",
+  main = "Effect of Exterminator Visits Across Quantiles"
+)
+
+title(
+  xlab = "Quantiles of Complaints",
+  ylab = "Coefficient for Exterminator Visits"
+)
+
+
 ```
 
 

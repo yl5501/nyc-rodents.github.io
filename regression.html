@@ -333,6 +333,9 @@ div.tocify {
   <a href="analysis.html">Exploratory Analysis</a>
 </li>
 <li>
+  <a href="regression.html">Regression Analysis</a>
+</li>
+<li>
   <a href="mailto:yl5501@cumc.columbia.edu">
     <span class="fa fa-envelope fa-lg"></span>
      
@@ -358,17 +361,20 @@ div.tocify {
 </div>
 
 
-<div id="section" class="section level2">
-<h2></h2>
 <div id="defining-variables" class="section level3">
 <h3>Defining variables</h3>
 <p>Dependent Variable (Y): Number of complaints (count from the 311
 complaints dataset). Independent Variables (X): Exterminator visits
 (count from the exterminator visits dataset). Compliance inspections
 (count from the compliance inspections dataset).</p>
-<p>Steps: Merge the datasets based on <code>date</code> and
-<code>zone_id</code>. Run a linear regression model to assess how
-independent variables influence complaints. Evaluate the model.</p>
+<p>Steps:</p>
+<ul>
+<li>Merge the datasets based on <code>date</code> and
+<code>zone_id</code>.</li>
+<li>Run a linear regression model to assess how independent variables
+influence complaints.</li>
+<li>Evaluate the model.</li>
+</ul>
 <details>
 <summary>
 Click to view the detailed code
@@ -383,29 +389,24 @@ Click to view the detailed code
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(ggplot2)
-library(broom)  # For model summary
+library(broom)
 
-# Load cleaned datasets
 complaints_data &lt;- read.csv(&quot;cleaned_311_complaints.csv&quot;)
 exterminator_data &lt;- read.csv(&quot;cleaned_exterminator_visits.csv&quot;)
 inspections_data &lt;- read.csv(&quot;cleaned_compliance_inspections.csv&quot;)
 
-# Aggregate complaints data
 complaints_data &lt;- complaints_data %&gt;%
   group_by(date, zone_id, region) %&gt;%
   summarise(complaints = sum(count, na.rm = TRUE), .groups = &quot;drop&quot;)
 
-# Aggregate exterminator visits data
 exterminator_data &lt;- exterminator_data %&gt;%
   group_by(date, zone_id, region) %&gt;%
   summarise(exterminator_visits = sum(count, na.rm = TRUE), .groups = &quot;drop&quot;)
 
-# Aggregate compliance inspections data
 inspections_data &lt;- inspections_data %&gt;%
   group_by(date, zone_id, region) %&gt;%
   summarise(compliance_inspections = sum(count, na.rm = TRUE), .groups = &quot;drop&quot;)
 
-# Merge datasets by date, zone_id, and region
 merged_data &lt;- complaints_data %&gt;%
   inner_join(exterminator_data, by = c(&quot;date&quot;, &quot;zone_id&quot;, &quot;region&quot;)) %&gt;%
   inner_join(inspections_data, by = c(&quot;date&quot;, &quot;zone_id&quot;, &quot;region&quot;))</code></pre>
@@ -457,28 +458,11 @@ print(model_summary)</code></pre>
 ## Multiple R-squared:  0.4046, Adjusted R-squared:  0.313 
 ## F-statistic: 4.417 on 2 and 13 DF,  p-value: 0.03437</code></pre>
 </details>
-<pre class="r"><code># Extract Regression Coefficients
-coefficients &lt;- broom::tidy(regression_model)
-print(coefficients)</code></pre>
-<pre><code>## # A tibble: 3 × 5
-##   term                   estimate std.error statistic p.value
-##   &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-## 1 (Intercept)            377.      313.          1.20  0.250 
-## 2 exterminator_visits      0.258     0.103       2.51  0.0263
-## 3 compliance_inspections  -0.0840    0.0775     -1.08  0.299</code></pre>
-<pre class="r"><code># Evaluate Model Fit: Extract R-squared and Adjusted R-squared
-r_squared &lt;- model_summary$r.squared
-adjusted_r_squared &lt;- model_summary$adj.r.squared
-
-# Print R-squared and Adjusted R-squared
-cat(&quot;R-squared: &quot;, r_squared, &quot;\n&quot;)</code></pre>
-<pre><code>## R-squared:  0.4046251</code></pre>
-<pre class="r"><code>cat(&quot;Adjusted R-squared: &quot;, adjusted_r_squared, &quot;\n&quot;)</code></pre>
-<pre><code>## Adjusted R-squared:  0.313029</code></pre>
+<p>
+<p><br></p>
 </div>
-</div>
-<div id="coefficient-analysis-from-broomtidy" class="section level2">
-<h2>Coefficient Analysis (from <code>broom::tidy()</code>)</h2>
+<div id="coefficient-analysis-from-broomtidy" class="section level3">
+<h3>Coefficient Analysis (from <code>broom::tidy()</code>)</h3>
 <p>For every <strong>additional exterminator</strong> visit, complaints
 are expected to increase by approximately 0.258, when inspections remain
 constant. The p-value is 0.0263, meaning that it is significant at the
@@ -493,8 +477,59 @@ significant at the 5% level of significance. The negative estimate
 suggests a potential reduction in complaints with more inspections, but
 the lack of statistical significance means this effect cannot be
 reliably inferred from the data.</p>
+<details>
+<summary>
+Click to view the detailed code
+</summary>
+<pre class="r"><code># Extract Regression Coefficients
+coefficients &lt;- broom::tidy(regression_model)
+print(coefficients)</code></pre>
+<pre><code>## # A tibble: 3 × 5
+##   term                   estimate std.error statistic p.value
+##   &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept)            377.      313.          1.20  0.250 
+## 2 exterminator_visits      0.258     0.103       2.51  0.0263
+## 3 compliance_inspections  -0.0840    0.0775     -1.08  0.299</code></pre>
+</details>
+<p>
+<p><br></p>
+</div>
+<div id="model-fit-from-summary" class="section level3">
+<h3>Model Fit (from <code>summary()</code>)</h3>
+<p>
+<ul>
+<li>R_squared: 0.4046<br> Approximately 40.46% of the variability in
+complaints is explained by the model. This is a moderate fit but leaves
+59.54% of the variability unexplained, suggesting other factors may
+contribute to complaints.</li>
+</ul>
+<p>
+<ul>
+<li>Adjusted R-squared: 0.3130<br> After accounting for the number of
+predictors, the model explains 31.3% of the variability in complaints.
+The relatively lower value of adjusted R-squared indicates that some
+variance may be attributed to noise or irrelevant predictors.</li>
+</ul>
+</div>
 <div id="visualize-regression-relationships" class="section level3">
 <h3>Visualize Regression Relationships</h3>
+<div id="exterminator-visits-vs.-complaints" class="section level5">
+<h5>Exterminator Visits vs. Complaints:</h5>
+<ul>
+<li>The scatter plot shows a positive trend with a significant
+regression line (p &lt; 0.05).</li>
+<li>The shaded confidence interval highlights variability in the
+predictions, with more uncertainty at higher numbers of visits.</li>
+</ul>
+</div>
+<div id="compliance-inspections-vs.-complaints" class="section level5">
+<h5>Compliance Inspections vs. Complaints:</h5>
+<ul>
+<li>The plot shows a slight negative trend, but the regression line is
+not statistically significant (p &gt; 0.05).</li>
+<li>The confidence interval is relatively wide, reflecting the weak
+relationship.</li>
+</ul>
 <pre class="r"><code># Scatter plot with regression line for exterminator visits
 ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
   geom_point(alpha = 0.6, color = &quot;blue&quot;) +
@@ -506,7 +541,7 @@ ggplot(merged_data, aes(x = exterminator_visits, y = complaints)) +
   ) +
   theme_minimal()</code></pre>
 <pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="regression_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code># Scatter plot with regression line for compliance inspections
 ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
   geom_point(alpha = 0.6, color = &quot;green&quot;) +
@@ -518,8 +553,319 @@ ggplot(merged_data, aes(x = compliance_inspections, y = complaints)) +
   ) +
   theme_minimal()</code></pre>
 <pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="regression_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<p><img src="regression_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
 </div>
+</div>
+<div id="adding-aditional-time-predictor" class="section level3">
+<h3>Adding Aditional Time Predictor</h3>
+<div id="exterminator-visits" class="section level5">
+<h5>Exterminator Visits:</h5>
+<ul>
+<li>Estimate: 0.25798, p-value = 0.0329
+</p></li>
+<li>Statistically significant at the 5% level.</li>
+<li>A positive coefficient indicates that for every additional
+exterminator visit, complaints are expected to increase by approximately
+0.258, when all other variables remain constant.</li>
+</ul>
+</div>
+<div id="compliance-inspections" class="section level5">
+<h5>Compliance Inspections:</h5>
+<ul>
+<li>Estimate: -0.08301, p-value = 0.3259</li>
+<li>Not statistically significant.</li>
+<li>A negative coefficient indicates a potential decrease in complaints
+with more inspections, but the evidence is not strong enough to draw
+reliable conclusions.</li>
+</ul>
+</div>
+<div id="month" class="section level5">
+<h5>Month:</h5>
+<ul>
+<li>Estimate: -5.66314, p-value = 0.9068</li>
+<li>Not statistically significant.</li>
+<li>This suggests that complaints do not show a strong linear trend
+across months.</li>
+</ul>
+<details>
+<summary>
+Click to view the detailed code
+</summary>
+<pre class="r"><code># Extract month as a numeric value and categorize into seasons
+merged_data &lt;- merged_data %&gt;%
+  mutate(
+    month = format(as.Date(date), &quot;%m&quot;),  
+    season = case_when(                  
+      month %in% c(&quot;12&quot;, &quot;01&quot;, &quot;02&quot;) ~ &quot;Winter&quot;,
+      month %in% c(&quot;03&quot;, &quot;04&quot;, &quot;05&quot;) ~ &quot;Spring&quot;,
+      month %in% c(&quot;06&quot;, &quot;07&quot;, &quot;08&quot;) ~ &quot;Summer&quot;,
+      month %in% c(&quot;09&quot;, &quot;10&quot;, &quot;11&quot;) ~ &quot;Fall&quot;
+    ),
+    month = as.numeric(month)            # Convert month to numeric for regression
+  )
+
+# Convert season to a factor for regression analysis
+merged_data &lt;- merged_data %&gt;%
+  mutate(season = factor(season, levels = c(&quot;Winter&quot;, &quot;Spring&quot;, &quot;Summer&quot;, &quot;Fall&quot;)))
+
+# Run the updated regression model: Complaints ~ Exterminator Visits + Compliance Inspections + Time Predictors
+regression_model_time &lt;- lm(complaints ~ exterminator_visits + compliance_inspections + month + season, data = merged_data)
+
+model_summary_time &lt;- summary(regression_model_time)
+print(model_summary_time)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = complaints ~ exterminator_visits + compliance_inspections + 
+##     month + season, data = merged_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -582.75 -358.41  -83.69  212.65 1059.73 
+## 
+## Coefficients: (1 not defined because of singularities)
+##                         Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)            421.48360  493.84637   0.853   0.4101  
+## exterminator_visits      0.25798    0.10700   2.411   0.0329 *
+## compliance_inspections  -0.08301    0.08105  -1.024   0.3259  
+## month                   -5.66314   47.35168  -0.120   0.9068  
+## seasonSummer                  NA         NA      NA       NA  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 557.9 on 12 degrees of freedom
+## Multiple R-squared:  0.4053, Adjusted R-squared:  0.2567 
+## F-statistic: 2.726 on 3 and 12 DF,  p-value: 0.09057</code></pre>
+<pre class="r"><code># Extract and print R-squared and Adjusted R-squared
+r_squared_time &lt;- model_summary_time$r.squared
+adjusted_r_squared_time &lt;- model_summary_time$adj.r.squared
+cat(&quot;R-squared: &quot;, r_squared_time, &quot;\n&quot;)</code></pre>
+<pre><code>## R-squared:  0.4053339</code></pre>
+<pre class="r"><code>cat(&quot;Adjusted R-squared: &quot;, adjusted_r_squared_time, &quot;\n&quot;)</code></pre>
+<pre><code>## Adjusted R-squared:  0.2566674</code></pre>
+<pre class="r"><code># Extract regression coefficients
+coefficients_time &lt;- broom::tidy(regression_model_time)
+print(coefficients_time)</code></pre>
+<pre><code>## # A tibble: 5 × 5
+##   term                   estimate std.error statistic p.value
+##   &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept)            421.      494.         0.853  0.410 
+## 2 exterminator_visits      0.258     0.107      2.41   0.0329
+## 3 compliance_inspections  -0.0830    0.0810    -1.02   0.326 
+## 4 month                   -5.66     47.4       -0.120  0.907 
+## 5 seasonSummer            NA        NA         NA     NA</code></pre>
+</details>
+<p>
+<p><br></p>
+<p>The boxplot below shows that complaints are generally higher during
+Summer than Winter, with wider variability in the Summer. Food
+availability could be a potential reason for accounting this pattern.
+Although seasonal effect is not significant in this model, further
+investigation into weather and food availability for rodents may reveal
+actionable insights.</p>
+<pre class="r"><code># Visualize the effect of season on complaints
+ggplot(merged_data, aes(x = season, y = complaints, fill = season)) +
+  geom_boxplot() +
+  labs(
+    title = &quot;Seasonal Effect on Complaints&quot;,
+    x = &quot;Season&quot;,
+    y = &quot;Number of Complaints&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="regression_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+</div>
+<div id="adding-interaction-term-exterminator_visits-season"
+class="section level3">
+<h3>Adding Interaction Term <code>exterminator_visits *
+season</code></h3>
+<p>The interaction term is not significant, indicating that the
+relationship between exterminator visits and complaints does not vary
+meaningfully between Winter and Summer.</p>
+<details>
+<summary>
+Click to view the detailed code
+</summary>
+<pre class="r"><code># Update the regression model to include the interaction term
+regression_model_interaction &lt;- lm(
+  complaints ~ exterminator_visits * season + compliance_inspections + month,
+  data = merged_data
+)
+
+# Display the updated model summary
+model_summary_interaction &lt;- summary(regression_model_interaction)
+print(model_summary_interaction)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = complaints ~ exterminator_visits * season + compliance_inspections + 
+##     month, data = merged_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -628.05 -367.80  -38.33  232.54 1046.58 
+## 
+## Coefficients: (1 not defined because of singularities)
+##                                   Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)                      287.77534  478.92433   0.601   0.5601  
+## exterminator_visits                0.27919    0.14108   1.979   0.0734 .
+## seasonSummer                     183.87027  679.03717   0.271   0.7916  
+## compliance_inspections            -0.08883    0.08769  -1.013   0.3328  
+## month                                   NA         NA      NA       NA  
+## exterminator_visits:seasonSummer  -0.03416    0.13929  -0.245   0.8108  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 581.1 on 11 degrees of freedom
+## Multiple R-squared:  0.4086, Adjusted R-squared:  0.1935 
+## F-statistic:   1.9 on 4 and 11 DF,  p-value: 0.1807</code></pre>
+<pre class="r"><code># Extract and print R-squared and Adjusted R-squared
+r_squared_interaction &lt;- model_summary_interaction$r.squared
+adjusted_r_squared_interaction &lt;- model_summary_interaction$adj.r.squared
+cat(&quot;R-squared: &quot;, r_squared_interaction, &quot;\n&quot;)</code></pre>
+<pre><code>## R-squared:  0.4085681</code></pre>
+<pre class="r"><code>cat(&quot;Adjusted R-squared: &quot;, adjusted_r_squared_interaction, &quot;\n&quot;)</code></pre>
+<pre><code>## Adjusted R-squared:  0.1935019</code></pre>
+<pre class="r"><code># Extract regression coefficients
+coefficients_interaction &lt;- broom::tidy(regression_model_interaction)
+print(coefficients_interaction)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   term                             estimate std.error statistic p.value
+##   &lt;chr&gt;                               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept)                      288.      479.         0.601  0.560 
+## 2 exterminator_visits                0.279     0.141      1.98   0.0734
+## 3 seasonSummer                     184.      679.         0.271  0.792 
+## 4 compliance_inspections            -0.0888    0.0877    -1.01   0.333 
+## 5 month                             NA        NA         NA     NA     
+## 6 exterminator_visits:seasonSummer  -0.0342    0.139     -0.245  0.811</code></pre>
+</details>
+<pre class="r"><code># Visualize the interaction effect
+ggplot(merged_data, aes(x = exterminator_visits, y = complaints, color = season)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = &quot;lm&quot;, se = FALSE) +
+  labs(
+    title = &quot;Interaction Between Exterminator Visits and Season&quot;,
+    x = &quot;Exterminator Visits&quot;,
+    y = &quot;Number of Complaints&quot;,
+    color = &quot;Season&quot;
+  ) +
+  theme_minimal()</code></pre>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="regression_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="quantile-regression" class="section level3">
+<h3>Quantile Regression</h3>
+<details>
+<summary>
+Click to view the detailed code
+</summary>
+<pre class="r"><code># Load necessary library for quantile regression
+library(quantreg)</code></pre>
+<pre><code>## Loading required package: SparseM</code></pre>
+<pre class="r"><code># Perform quantile regression at different quantiles (e.g., 0.25, 0.5, 0.75)
+quantile_model_25 &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.25, data = merged_data)
+quantile_model_50 &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.50, data = merged_data) # Median regression
+quantile_model_75 &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = 0.75, data = merged_data)
+
+# Display summaries of the models
+cat(&quot;Quantile Regression for Tau = 0.25\n&quot;)</code></pre>
+<pre><code>## Quantile Regression for Tau = 0.25</code></pre>
+<pre class="r"><code>print(summary(quantile_model_25))</code></pre>
+<pre><code>## 
+## Call: rq(formula = complaints ~ exterminator_visits + compliance_inspections, 
+##     tau = 0.25, data = merged_data)
+## 
+## tau: [1] 0.25
+## 
+## Coefficients:
+##                        coefficients lower bd   upper bd  
+## (Intercept)             282.32401   -312.32251  295.11464
+## exterminator_visits       0.03679     -0.12553    0.33265
+## compliance_inspections    0.02979     -0.11034    0.18462</code></pre>
+<pre class="r"><code>cat(&quot;\nQuantile Regression for Tau = 0.50 (Median)\n&quot;)</code></pre>
+<pre><code>## 
+## Quantile Regression for Tau = 0.50 (Median)</code></pre>
+<pre class="r"><code>print(summary(quantile_model_50))</code></pre>
+<pre><code>## 
+## Call: rq(formula = complaints ~ exterminator_visits + compliance_inspections, 
+##     tau = 0.5, data = merged_data)
+## 
+## tau: [1] 0.5
+## 
+## Coefficients:
+##                        coefficients lower bd   upper bd  
+## (Intercept)             138.16936    -56.19551 1092.16785
+## exterminator_visits       0.22482     -0.07021    0.38994
+## compliance_inspections   -0.03569     -0.35441    0.08332</code></pre>
+<pre class="r"><code>cat(&quot;\nQuantile Regression for Tau = 0.75\n&quot;)</code></pre>
+<pre><code>## 
+## Quantile Regression for Tau = 0.75</code></pre>
+<pre class="r"><code>print(summary(quantile_model_75))</code></pre>
+<pre><code>## 
+## Call: rq(formula = complaints ~ exterminator_visits + compliance_inspections, 
+##     tau = 0.75, data = merged_data)
+## 
+## tau: [1] 0.75
+## 
+## Coefficients:
+##                        coefficients lower bd   upper bd  
+## (Intercept)             934.33368   -395.04880 2429.77482
+## exterminator_visits       0.33527      0.22506    0.54392
+## compliance_inspections   -0.16643     -0.31296    0.43441</code></pre>
+<pre class="r"><code># Visualize quantile regression results
+taus &lt;- c(0.25, 0.5, 0.75)  # Quantiles to analyze
+quantile_results &lt;- rq(complaints ~ exterminator_visits + compliance_inspections, tau = taus, data = merged_data)
+
+# Coefficients across quantiles
+quantile_coefficients &lt;- coef(quantile_results)
+print(quantile_coefficients)</code></pre>
+<pre><code>##                           tau= 0.25    tau= 0.50   tau= 0.75
+## (Intercept)            282.32400847 138.16936362 934.3336831
+## exterminator_visits      0.03678927   0.22482444   0.3352669
+## compliance_inspections   0.02979157  -0.03568894  -0.1664253</code></pre>
+</details>
+<div id="effect-of-exterminator-visits" class="section level5">
+<h5>Effect of Exterminator Visits:</h5>
+<p>The relationship strengthens as complaints increase (from Tau = 0.25
+to Tau = 0.75). At high quantiles (e.g., Tau = 0.75), exterminator
+visits are significantly associated with complaints. This suggests
+exterminator visits are primarily deployed reactively in high-complaint
+areas, rather than proactively preventing complaints.</p>
+</div>
+<div id="effect-of-compliance-inspections" class="section level5">
+<h5>Effect of Compliance Inspections:</h5>
+<p>The negative relationship between compliance inspections and
+complaints becomes stronger at higher quantiles, potentially reflecting
+the efficacy of inspections in high-complaint areas. However, the
+effects are not statistically significant.</p>
+</div>
+<div id="heterogeneity-across-quantiles" class="section level5">
+<h5>Heterogeneity Across Quantiles:</h5>
+<p>The results show substantial differences in the effects of predictors
+across quantiles, emphasizing the importance of quantile regression in
+capturing these variations.</p>
+</div>
+</div>
+<div id="recommendations" class="section level3">
+<h3>Recommendations</h3>
+<p>Target High-Complaint Areas: Given the strong relationship between
+exterminator visits and complaints at high quantiles, resources should
+focus on high-complaint areas to address rodent issues proactively.</p>
+<p>Enhance Inspection Effectiveness: Strengthen compliance inspection
+processes in areas with high complaints to validate the apparent (though
+not significant) reduction in complaints associated with
+inspections.</p>
+<pre class="r"><code>par(mar = c(3.9, 3.6, 4, 2) + 0.5)
+
+plot(
+  summary(quantile_results),
+  parm = &quot;exterminator_visits&quot;,
+  main = &quot;Effect of Exterminator Visits Across Quantiles&quot;
+)
+
+title(
+  xlab = &quot;Quantiles of Complaints&quot;,
+  ylab = &quot;Coefficient for Exterminator Visits&quot;
+)</code></pre>
+<p><img src="regression_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 
 
