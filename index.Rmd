@@ -1,12 +1,11 @@
 ---
-title: "NYC Rodents"
+title: "NYC Rodents Project"
 output: 
   html_document:
     toc: true
     toc_float: true
 ---
 
-# About Rodents Project 
 ![](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTE5dDNjaDZmN2xkb242NGhlcGFxZmExZXlyeWt4MGhwMGt2Mm93aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PGZDyeFpO56MM/giphy.gif)
 
 ## Motivation 
@@ -15,7 +14,8 @@ Project goal: Investigate rodent complaints, inspections, and exterminator activ
 Motivation: Address public health and sanitation concerns by understanding how city responses correlate with rodent complaints.
 
 ## Links to other websites
-* [My Github](https://github.com/yl5501)
+The data being used for this project is downloaded from [NYC Open data](https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data)
+
 * [My Linkedin](https://www.linkedin.com/in/yujieli1103/)
 * E-mail: [yl5501@cumc.columbia.edu](mailto:yl5501@cumc.columbia.edu)
 
