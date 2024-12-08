@@ -8,24 +8,12 @@ output:
 
 ![](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTE5dDNjaDZmN2xkb242NGhlcGFxZmExZXlyeWt4MGhwMGt2Mm93aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PGZDyeFpO56MM/giphy.gif)
 
-## Motivation 
-Project goal: Investigate rodent complaints, inspections, and exterminator activities to find out trends and effectiveness of interventions.
+Rodent infestations pose a significant public health and sanitation challenge in urban environments like New York City. This project aims to analyze rodent complaints and evaluate the effectiveness of various interventions, providing actionable insights for improving pest control strategies. 
 
-Motivation: Address public health and sanitation concerns by understanding how city responses correlate with rodent complaints.
+## Links to screencast
 
-## Links to other websites
-The data being used for this project is downloaded from [NYC Open data](https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data)
-
-* [My Linkedin](https://www.linkedin.com/in/yujieli1103/)
-* E-mail: [yl5501@cumc.columbia.edu](mailto:yl5501@cumc.columbia.edu)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mC2bGVXtiJw?si=5yIUWo9RPtSgz2rv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
-
-
-## Link to my academic and professional experience
-[About me](about.html)
-
-## Link to Problem 2
-[Problem 2](plotly.html)
 
 

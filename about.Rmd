@@ -6,9 +6,10 @@ output:
     toc_float: true
 ---
 
-# About this project
 
-The data being used for this project is downloaded from [NYC Open data](https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data)
+The data being used for this project is downloaded from [nyc.gov](https://a816-dohbesp.nyc.gov/IndicatorPublic/data-features/rat-mitigation-zones/#top).
 
+This topic was chosen because rats are many people's nightmare in NYC. While you may just had a wonderful dinner in a fancy restaurant with your partner, or waiting for A train at the subway station, seeing a rat crossing has the power to change every feeling from last second. If you are lucky enough, you might see the rats battling for food somewhere near the huge black trash bags with high-pitched squeaking when walking home alone at the midnight. 
 
+Why is New York City so metropolitan but dirty? Has there been any improvement with the condition? We are here in NYC and can we make a change to the stubborn public health issue? 
 

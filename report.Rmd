@@ -1,5 +1,5 @@
 ---
-title: "Report"
+title: "NYC Rodents Project Report"
 output: 
   html_document:
     toc: true
@@ -28,7 +28,7 @@ output:
 <p><br>
 
 ## Data
-* Source: The data being used for this project is downloaded from [NYC Open data](https://data.cityofnewyork.us/Health/Rodent-Inspection/p937-wjvj/about_data).
+* Source: The data being used for this project is downloaded from [nyc.gov](https://a816-dohbesp.nyc.gov/IndicatorPublic/data-features/rat-mitigation-zones/#top).
 * Scraping Method: publicly available downloads
 * Cleaning: 
   - Standardizing column names.

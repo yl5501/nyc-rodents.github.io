@@ -185,7 +185,7 @@ scatter_compliance
 <p><br>
 
 
-### Adding Aditional Time Predictor
+### Adding Additional Time Predictor
 
 ##### Exterminator Visits:
 * Estimate: 0.25798, p-value = 0.0329 </p>
@@ -273,7 +273,7 @@ plotly_boxplot
 ```
 <p><br>
 
-### Adding Interaction Term <code>exterminator_visits * season</code>
+### Adding an Interaction Term <code>exterminator_visits * season</code>
 
 The interaction term is not significant, indicating that the relationship between exterminator visits and complaints does not vary meaningfully between Winter and Summer.
 
@@ -307,7 +307,7 @@ interaction_plot <- plot_ly(
   y = ~complaints,
   color = ~season,
   type = "scatter",
-  mode = "markers",
+  mode = "markers",  # Explicitly use markers for scatter points
   marker = list(opacity = 0.6)
 ) %>%
   # Add regression lines for each season
@@ -316,7 +316,7 @@ interaction_plot <- plot_ly(
     x = ~exterminator_visits,
     y = fitted(lm(complaints ~ exterminator_visits, data = merged_data %>% filter(season == "Winter"))),
     type = "scatter",
-    mode = "lines",
+    mode = "lines",  # Explicitly set mode to "lines" for the regression line
     line = list(color = "blue", dash = "solid"),
     name = "Winter Regression"
   ) %>%
@@ -325,7 +325,7 @@ interaction_plot <- plot_ly(
     x = ~exterminator_visits,
     y = fitted(lm(complaints ~ exterminator_visits, data = merged_data %>% filter(season == "Summer"))),
     type = "scatter",
-    mode = "lines",
+    mode = "lines",  # Explicitly set mode to "lines" for the regression line
     line = list(color = "orange", dash = "solid"),
     name = "Summer Regression"
   ) %>%
@@ -336,12 +336,12 @@ interaction_plot <- plot_ly(
     legend = list(title = list(text = "Season"))
   )
 
-
 ```
 </details>
 ``
 
 ```{r}
+
 interaction_plot
 
 ```
@@ -412,15 +412,7 @@ title(
 ### Conclusion
   The quantile regression analysis reveals important insights into how exterminator visits influence rodent complaints across different levels of complaints. The coefficients for exterminator visits increase as we move from lower quantiles (0.25) to higher quantiles (0.75), suggesting that exterminator visits have a stronger impact in areas with a higher volume of complaints. At the 0.25 quantile, the effect is minimal (0.037), while at the 0.75 quantile, the coefficient rises to 0.335. This indicates that neighborhoods with more severe rodent problems (upper quantiles of complaints) are more sensitive to the number of exterminator visits.
 
-  The confidence intervals, as shown in the shaded region of the plot, suggest that while the effect is statistically uncertain at lower quantiles, it becomes more pronounced and meaningful at higher quantiles. This pattern highlights the importance of targeting exterminator visits to areas experiencing higher rodent activity, where the intervention appears to have the most significant impact. This insight can help NYC optimize its pest control resources, ensuring that heavily impacted neighborhoods receive priority attention. By focusing on high-complaint regions, the city can better address rodent infestations and improve the effectiveness of its rodent management strategies.
-
-## Recommendations
-
-* Target High-Complaint Areas:
-Given the strong relationship between exterminator visits and complaints at high quantiles, resources should focus on high-complaint areas to address rodent issues proactively.
-  
-* Enhance Inspection Effectiveness:
-Strengthen compliance inspection processes in areas with high complaints to validate the apparent (though not significant) reduction in complaints associated with inspections.
+The confidence intervals, as shown in the shaded region of the plot, suggest that while the effect is statistically uncertain at lower quantiles, it becomes more pronounced and meaningful at higher quantiles. This pattern highlights the importance of targeting exterminator visits to areas experiencing higher rodent activity, where the intervention appears to have the most significant impact. This insight can help NYC optimize its pest control resources, ensuring that heavily impacted neighborhoods receive priority attention. By focusing on high-complaint regions, the city can better address rodent infestations and improve the effectiveness of its rodent management strategies.
 
 
 
